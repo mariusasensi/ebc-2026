@@ -1,0 +1,29 @@
+{
+  "name": "Camp Base de l’Everest · 2026",
+  "short_name": "EBC 2026",
+  "description": "13 dies a peu de Lukla al Camp Base de l’Everest i tornada.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#EEF3F6",
+  "theme_color": "#15232F",
+  "lang": "ca",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

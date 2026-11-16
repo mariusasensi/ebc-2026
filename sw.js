@@ -1,11 +1,11 @@
 // Memòria cau de la web EBC 2026.
 // Canvia VERSION quan pugis canvis importants perquè tothom rebi la versió nova.
-const VERSION = "ebc-v2";
+const VERSION = "ebc-v4";
 const STATIC = VERSION + "-static", RUNTIME = VERSION + "-runtime", TILES = VERSION + "-tiles";
 const MAX_TILES = 400;
 
 self.addEventListener("install", e => {
-  e.waitUntil(caches.open(STATIC).then(c => c.addAll(["./", "./index.html", "./og.jpg"])).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(STATIC).then(c => c.addAll(["./", "./index.html", "./og.jpg", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png"])).then(() => self.skipWaiting()));
 });
 self.addEventListener("activate", e => {
   e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => !k.startsWith(VERSION)).map(k => caches.delete(k))))
