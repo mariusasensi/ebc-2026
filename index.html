@@ -139,7 +139,7 @@
 
 <footer>
   <p>Distàncies, desnivells i altituds segons Wikiloc; traçats enregistrats amb Gaia GPS. Altitud de l’EBC: cota oficial.
-  Mapa: © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, SRTM · estil © <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA).</p>
+  Mapa: © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.</p>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
@@ -174,9 +174,9 @@ const TOTAL = off;
 // Mapa
 const map = L.map("map", { zoomControl: false, scrollWheelZoom: false, tap: true });
 L.control.zoom({ position: "topright" }).addTo(map);
-L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
-  maxZoom: 17, subdomains: "abc",
-  attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, SRTM · © <a href="https://opentopomap.org">OpenTopoMap</a>'
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  maxZoom: 19,
+  attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 const css = getComputedStyle(document.documentElement);
 const GLACIER = "#2E5E86", SEL = "#C62828";
@@ -266,7 +266,7 @@ function go(day, fromHash) {
     $("night").textContent = s.day === 13 ? "Final del trek a Lukla (2.860 m)." : `Nit a ${s.sleep} (${nf(s.sleepAlt)} m).`;
     $("dl").href = s.gpx; $("dl").setAttribute("download", s.gpx.split("/").pop()); $("dl").hidden = false;
     $("all").hidden = false;
-    map.flyToBounds(s.bounds, { padding: [30, 30], maxZoom: 15, animate: !reduce, duration: .6 });
+    map.flyToBounds(s.bounds, { padding: [30, 30], maxZoom: 16, animate: !reduce, duration: .6 });
     flags.children[day - 1].scrollIntoView({ behavior: reduce ? "auto" : "smooth", inline: "center", block: "nearest" });
   }
   drawProfile(s);
