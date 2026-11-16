@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Camp Base de l’Everest · 2026</title>
 <meta name="description" content="13 dies a peu de Lukla al Camp Base de l’Everest i tornada · 13 days on foot from Lukla to Everest Base Camp and back.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Camp Base de l’Everest · 2026">
+<meta property="og:description" content="13 dies a peu de Lukla al Camp Base de l’Everest i tornada: 134 km, 6.534 m de desnivell i 5.364 m d’altitud.">
+<meta property="og:image" content="https://USUARI.github.io/ebc-2026/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://USUARI.github.io/ebc-2026/">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏔️</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,7 +46,7 @@
 
   /* Capçalera */
   header {
-    position: sticky; top: 0; z-index: 1000;
+    position: sticky; top: 0; z-index: 3000;
     padding-top: env(safe-area-inset-top, 0px);
     background: var(--hdr); backdrop-filter: saturate(1.4) blur(10px); -webkit-backdrop-filter: saturate(1.4) blur(10px);
     border-bottom: 1px solid var(--line);
@@ -58,12 +66,33 @@
   :is(.langs button, .navlink, .brand, .home, .lock, .all, .btn):focus-visible { outline: 3px solid var(--glacier); outline-offset: 2px; }
 
   /* Mapa */
-  .hero { position: relative; height: 58svh; min-height: 340px; }
+  .layout { display: block; }
+  .hero { position: sticky; top: calc(var(--hh) + env(safe-area-inset-top, 0px)); z-index: 900;
+          height: 42svh; min-height: 260px; box-shadow: 0 6px 14px -10px rgba(0,0,0,.45); isolation: isolate; }
+  .rope, main { scroll-margin-top: calc(var(--hh) + env(safe-area-inset-top, 0px) + max(42svh, 260px) + 8px); }
+  .intro { max-width: 760px; margin: 0 auto; padding: 1.3rem 1.25rem .2rem; }
+  .intro h1 { margin: 0; font-weight: 700; font-size: clamp(2.2rem, 8vw, 3.4rem); line-height: .95; }
+  .intro p { margin: .45rem 0 0; color: var(--ink-soft); max-width: 46ch; }
+  @media (min-width: 900px) {
+    .layout { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(400px, 1fr); }
+    .hero { height: calc(100svh - var(--hh) - env(safe-area-inset-top, 0px)); box-shadow: none; }
+    .content { min-width: 0; }
+    .rope, main { scroll-margin-top: calc(var(--hh) + 8px); }
+    .rope-inner { justify-content: flex-start; }
+  }
+  .files { margin-top: 2rem; }
+  .files h3 { font: 600 1.3rem "Barlow Condensed", sans-serif; margin: 0 0 .6rem; }
+  .file-list { display: grid; gap: .5rem; }
+  .file { display: flex; align-items: center; gap: .8rem; padding: .7rem .9rem; border: 1px solid var(--line); border-radius: 12px;
+          background: var(--panel); color: var(--ink); text-decoration: none; }
+  .file:hover { border-color: var(--glacier); }
+  .file:focus-visible { outline: 3px solid var(--glacier); outline-offset: 2px; }
+  .file svg { width: 22px; height: 22px; flex: none; color: var(--glacier); }
+  .file .fn { font-weight: 500; }
+  .file .fm { font-size: .82rem; color: var(--ink-soft); }
+  #prof { touch-action: pan-y; cursor: crosshair; }
+  .hov-t { font: 600 15px "Barlow", sans-serif; }
   #map { position: absolute; inset: 0; background: var(--area); }
-  .title { position: absolute; left: 0; right: 0; bottom: 0; z-index: 500; pointer-events: none;
-           padding: 4rem 1.25rem 1.1rem; background: linear-gradient(to top, rgba(10,22,32,.78), rgba(10,22,32,0)); color: #fff; }
-  .title h1 { margin: 0; font-weight: 700; font-size: clamp(2.2rem, 9vw, 4rem); line-height: .95; }
-  .title p { margin: .35rem 0 0; font-size: .95rem; opacity: .92; max-width: 36ch; }
   .lock { position: absolute; z-index: 600; top: 12px; left: 12px; display: inline-flex; align-items: center; gap: .4rem;
           background: #fff; color: #15232F; border: 0; border-radius: 999px; padding: .45rem .8rem .45rem .6rem;
           font: 600 .85rem "Barlow", sans-serif; box-shadow: 0 1px 4px rgba(0,0,0,.25); cursor: pointer; }
@@ -93,12 +122,12 @@
           clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 86%, 0 100%);
           font: 600 1.05rem/1 "Barlow Condensed", sans-serif; color: #15232F; transform-origin: top center; transition: transform .2s ease; }
   .flag.c0 { background: var(--f-blue); color: #fff; }
-  .flag.c1 { background: var(--f-white); box-shadow: inset 0 0 0 1px #c9cfd4; }
+  .flag.c1 { background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 42 52' preserveAspectRatio='none'><polygon points='0.8,0.8 41.2,0.8 41.2,51.2 21.0,44.24 0.8,51.2' fill='%23F4F4EE' stroke='%23AEB8C0' stroke-width='1.6' stroke-linejoin='round'/></svg>") center / 100% 100% no-repeat; }
   .flag.c2 { background: var(--f-red); color: #fff; }
   .flag.c3 { background: var(--f-green); color: #fff; }
   .flag.c4 { background: var(--f-yellow); }
-  .flag.allf { width: 58px; background: #DC143C; color: #fff; font-size: .95rem;
-               box-shadow: inset 0 0 0 3px #003893; margin-right: 6px; }
+  .flag.c1, .flag.allf, .mf.c1, .mf.allf { clip-path: none; }
+  .flag.allf { width: 58px; background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 58 52' preserveAspectRatio='none'><polygon points='2.0,2.0 56.0,2.0 56.0,50.0 29.0,43.519999999999996 2.0,50.0' fill='%23DC143C' stroke='%23003893' stroke-width='4' stroke-linejoin='round'/></svg>") center / 100% 100% no-repeat; color: #fff; font-size: .95rem; margin-right: 6px; }
   .flag { transition: transform .2s ease, opacity .2s ease, filter .2s ease; }
   .rope-inner.has-sel .flag:not([aria-pressed="true"]) { opacity: .42; filter: saturate(.6); }
   .rope-inner.has-sel .flag:not([aria-pressed="true"]):hover { opacity: .8; }
@@ -106,9 +135,9 @@
   /* mini bandera de la fitxa */
   .mf { display: inline-block; width: 16px; height: 21px; margin-right: 10px; vertical-align: -1px;
         clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 86%, 0 100%); }
-  .mf.c0 { background: var(--f-blue); } .mf.c1 { background: var(--f-white); box-shadow: inset 0 0 0 1px #c9cfd4; }
+  .mf.c0 { background: var(--f-blue); } .mf.c1 { background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 21' preserveAspectRatio='none'><polygon points='0.6,0.6 15.4,0.6 15.4,20.4 8.0,17.7 0.6,20.4' fill='%23F4F4EE' stroke='%23AEB8C0' stroke-width='1.2' stroke-linejoin='round'/></svg>") center / 100% 100% no-repeat; }
   .mf.c2 { background: var(--f-red); } .mf.c3 { background: var(--f-green); } .mf.c4 { background: var(--f-yellow); }
-  .mf.allf { background: #DC143C; box-shadow: inset 0 0 0 2px #003893; }
+  .mf.allf { background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 21' preserveAspectRatio='none'><polygon points='1.0,1.0 15.0,1.0 15.0,20.0 8.0,17.459999999999997 1.0,20.0' fill='%23DC143C' stroke='%23003893' stroke-width='2' stroke-linejoin='round'/></svg>") center / 100% 100% no-repeat; }
   .pin { border-radius: 50%; border: 3px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,.35); }
   .pin.a { background: #fff; border-color: #DC143C; }
   .pin.b { background: #DC143C; }
@@ -123,11 +152,19 @@
   .date { margin: .15rem 0 0; color: var(--ink-soft); font-size: .92rem; }
   .all { background: none; border: 1px solid var(--line); color: var(--ink); border-radius: 999px;
          padding: .35rem .9rem; font: 500 .9rem "Barlow", sans-serif; cursor: pointer; }
-  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 1px;
-           background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin: 1.1rem 0; }
-  .stat { background: var(--panel); padding: .7rem .9rem .75rem; }
-  .stat .num { font-size: 1.9rem; font-weight: 600; line-height: 1; }
-  .stat .lab { font-size: .85rem; color: var(--ink-soft); margin-top: .2rem; }
+  .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 1.1rem 0;
+           background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: .8rem 0; }
+  .stat { padding: 0 .7rem; border-left: 1px solid var(--line); min-width: 0; }
+  .stat:first-child { border-left: 0; }
+  .stat .num { font: 600 1.75rem/1 "Barlow Condensed", sans-serif; white-space: nowrap; }
+  .stat .num small { font-size: .95rem; font-weight: 500; margin-left: 2px; color: var(--ink-soft); }
+  .stat .lab { font-size: .8rem; line-height: 1.2; color: var(--ink-soft); margin-top: .3rem; }
+  @media (max-width: 420px) {
+    .stat { padding: 0 .45rem; }
+    .stat .num { font-size: 1.4rem; }
+    .stat .num small { font-size: .8rem; }
+    .stat .lab { font-size: .72rem; }
+  }
   .profile { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: .8rem .6rem .4rem; }
   .profile svg { display: block; width: 100%; height: auto; }
   .profile .cap { margin: 0 .35rem .3rem; font-size: .85rem; color: var(--ink-soft); }
@@ -161,8 +198,8 @@
   @media (max-width: 460px) { .navlink { display: none; } .bar { gap: .5rem; } }
   @media (max-width: 350px) { .brand span { display: none; } }
   /* pantalla completa */
-  .hero.fs { position: fixed; inset: 0; height: 100svh; min-height: 0; z-index: 2000; }
-  .hero.fs .title { display: none; }
+  .hero.fs { position: fixed; inset: 0; height: 100svh; min-height: 0; z-index: 4000; }
+  .hero.fs { top: 0; }
   body.fs-on { overflow: hidden; }
   .leaflet-control-fs a { display: grid; place-items: center; }
   .lyr { position: relative; }
@@ -197,14 +234,17 @@
   </div>
 </header>
 
+<div class="layout">
 <div class="hero locked" id="hero">
   <div id="map" role="region"></div>
   <button class="lock" id="lock" type="button" aria-pressed="false"></button>
-  <div class="title">
-    <h1 id="h1"></h1>
-    <p id="sub"></p>
-  </div>
 </div>
+
+<div class="content">
+<section class="intro">
+  <h1 id="h1"></h1>
+  <p id="sub"></p>
+</section>
 
 <nav class="rope" id="etapes">
   <div class="rope-inner" id="flags"></div>
@@ -234,9 +274,15 @@
     <button class="pg prev" id="prev" type="button"></button>
     <button class="pg next" id="next" type="button"></button>
   </nav>
+  <section class="files" aria-labelledby="fh">
+    <h3 id="fh"></h3>
+    <div class="file-list" id="files"></div>
+  </section>
 </main>
 
 <footer><p id="foot"></p></footer>
+</div>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
@@ -246,7 +292,7 @@ const S = DATA.stages;
 // ---------- Textos ----------
 const T = {
   ca: { title: "Camp Base de l’Everest", sub: "Del 4 al 16 de novembre de 2026, a peu des de Lukla pel Parc Nacional de Sagarmatha.",
-        home: "Inici", allFlag: "Tot", dark: "Mode fosc", light: "Mode clar", fs: "Pantalla completa", fsOut: "Surt de la pantalla completa", lyr: ["Mapa", "Topogràfic", "Satèl·lit"], lyrTitle: "Tipus de mapa", stages: "Etapes", hint: "Toca una bandera per veure cada etapa.", map: "Mapa del recorregut",
+        home: "Inici", allFlag: "Tot", sGain: "pujada", sLoss: "baixada", sMax: "alt. màxima", sGainT: "pujada total", sEbc: "Camp Base", files: "Material del viatge", fPdf: "Resum en PDF", fPdfM: "15 pàgines · format vertical", fDeck: "Presentació en PDF", fDeckM: "16 pàgines · format 16:9, per a pantalla", fGpx: "Tots els tracks GPX", fGpxM: "13 fitxers en un zip", scrub: "Llisca pel perfil per seguir el recorregut al mapa.", dark: "Mode fosc", light: "Mode clar", fs: "Pantalla completa", fsOut: "Surt de la pantalla completa", lyr: ["Mapa", "Topogràfic", "Satèl·lit"], lyrTitle: "Tipus de mapa", stages: "Etapes", hint: "Toca una bandera per veure cada etapa.", map: "Mapa del recorregut",
         unlock: "Mou el mapa", lockIt: "Bloqueja el mapa", all: "Veure tot el trek", whole: "Tot el trek",
         wholeDate: "Del 4 al 16 de novembre de 2026", day: "Dia", days: "dies", onFoot: "a peu", gainTot: "de desnivell positiu",
         dist: "distància", gain: "desnivell positiu", loss: "desnivell negatiu", max: "altitud màxima",
@@ -257,7 +303,7 @@ const T = {
         foot: "Distàncies, desnivells i altituds segons Wikiloc; traçats enregistrats amb Gaia GPS. Altitud de l’EBC: cota oficial.",
         mapby: "Mapa" },
   es: { title: "Campo Base del Everest", sub: "Del 4 al 16 de noviembre de 2026, a pie desde Lukla por el Parque Nacional de Sagarmatha.",
-        home: "Inicio", allFlag: "Todo", dark: "Modo oscuro", light: "Modo claro", fs: "Pantalla completa", fsOut: "Salir de la pantalla completa", lyr: ["Mapa", "Topográfico", "Satélite"], lyrTitle: "Tipo de mapa", stages: "Etapas", hint: "Toca una bandera para ver cada etapa.", map: "Mapa del recorrido",
+        home: "Inicio", allFlag: "Todo", sGain: "subida", sLoss: "bajada", sMax: "alt. máxima", sGainT: "subida total", sEbc: "Campo Base", files: "Material del viaje", fPdf: "Resumen en PDF", fPdfM: "15 páginas · formato vertical · en catalán", fDeck: "Presentación en PDF", fDeckM: "16 páginas · formato 16:9 · en catalán", fGpx: "Todos los tracks GPX", fGpxM: "13 archivos en un zip", scrub: "Desliza por el perfil para seguir el recorrido en el mapa.", dark: "Modo oscuro", light: "Modo claro", fs: "Pantalla completa", fsOut: "Salir de la pantalla completa", lyr: ["Mapa", "Topográfico", "Satélite"], lyrTitle: "Tipo de mapa", stages: "Etapas", hint: "Toca una bandera para ver cada etapa.", map: "Mapa del recorrido",
         unlock: "Mover el mapa", lockIt: "Bloquear el mapa", all: "Ver todo el trek", whole: "Todo el trek",
         wholeDate: "Del 4 al 16 de noviembre de 2026", day: "Día", days: "días", onFoot: "a pie", gainTot: "de desnivel positivo",
         dist: "distancia", gain: "desnivel positivo", loss: "desnivel negativo", max: "altitud máxima",
@@ -268,7 +314,7 @@ const T = {
         foot: "Distancias, desniveles y altitudes según Wikiloc; tracks grabados con Gaia GPS. Altitud del EBC: cota oficial.",
         mapby: "Mapa" },
   en: { title: "Everest Base Camp", sub: "4–16 November 2026, on foot from Lukla through Sagarmatha National Park.",
-        home: "Home", allFlag: "All", dark: "Dark mode", light: "Light mode", fs: "Full screen", fsOut: "Exit full screen", lyr: ["Map", "Topographic", "Satellite"], lyrTitle: "Map style", stages: "Stages", hint: "Tap a flag to see each stage.", map: "Route map",
+        home: "Home", allFlag: "All", sGain: "ascent", sLoss: "descent", sMax: "highest point", sGainT: "total ascent", sEbc: "Base Camp", files: "Trip downloads", fPdf: "PDF summary", fPdfM: "15 pages · portrait · in Catalan", fDeck: "PDF slides", fDeckM: "16 pages · 16:9 for screens · in Catalan", fGpx: "All GPX tracks", fGpxM: "13 files in a zip", scrub: "Slide along the profile to follow the route on the map.", dark: "Dark mode", light: "Light mode", fs: "Full screen", fsOut: "Exit full screen", lyr: ["Map", "Topographic", "Satellite"], lyrTitle: "Map style", stages: "Stages", hint: "Tap a flag to see each stage.", map: "Route map",
         unlock: "Move the map", lockIt: "Lock the map", all: "See the whole trek", whole: "The whole trek",
         wholeDate: "4–16 November 2026", day: "Day", days: "days", onFoot: "on foot", gainTot: "elevation gain",
         dist: "distance", gain: "elevation gain", loss: "elevation loss", max: "highest point",
@@ -429,7 +475,7 @@ function placeMarker() {
   if (!f) return;
   marker.style.left = (f.offsetLeft + f.offsetWidth / 2) + "px";
 }
-addEventListener("resize", placeMarker);
+addEventListener("resize", () => { placeMarker(); map.invalidateSize(); });
 const dayFlags = S.map(s => {
   const b = document.createElement("button");
   b.className = "flag c" + ((s.day - 1) % 5); b.textContent = s.day; b.setAttribute("aria-pressed", "false");
@@ -462,13 +508,62 @@ function drawProfile(sel) {
   const s8 = S[7]; let bi = 0; s8.pts.forEach((p, i) => { if (p[2] > s8.pts[bi][2]) bi = i; });
   g += `<text x="${X(s8.cum[bi])}" y="${Y(s8.pts[bi][2]) - 8}" text-anchor="middle" font-size="18" fill="var(--sel)">★</text>`;
   [0, 25, 50, 75, 100, 125].forEach(k => g += `<text x="${X(k)}" y="${Hh - 8}" text-anchor="middle" font-size="13" fill="var(--ink-soft)">${k} km</text>`);
+  g += `<g id="hov" visibility="hidden"><line id="hovL" y1="${PAD.t}" y2="${Hh - PAD.b}" stroke="var(--ink)" stroke-width="1" stroke-dasharray="3 3"/>
+    <circle id="hovC" r="6" fill="#DC143C" stroke="#fff" stroke-width="2"/>
+    <text id="hovT" class="hov-t" y="${PAD.t + 14}" fill="var(--ink)"></text></g>`;
   prof.innerHTML = g;
+}
+
+// ---------- Perfil interactiu ----------
+const FLAT = [];
+S.forEach(s => s.pts.forEach((p, i) => FLAT.push([s.cum[i], p[2], p[0], p[1], s.day])));
+let hovM = null;
+function scrub(ev) {
+  const r = prof.getBoundingClientRect(); if (!r.width) return;
+  const vx = (ev.clientX - r.left) / r.width * W;
+  const km = Math.max(0, Math.min(TOTAL, (vx - PAD.l) / (W - PAD.l - PAD.r) * TOTAL));
+  let lo = 0, hi = FLAT.length - 1;
+  while (hi - lo > 1) { const m = (lo + hi) >> 1; if (FLAT[m][0] < km) lo = m; else hi = m; }
+  const p = Math.abs(FLAT[lo][0] - km) < Math.abs(FLAT[hi][0] - km) ? FLAT[lo] : FLAT[hi];
+  const x = X(p[0]), y = Y(p[1]);
+  const hov = document.getElementById("hov"); if (!hov) return;
+  hov.setAttribute("visibility", "visible");
+  document.getElementById("hovL").setAttribute("x1", x); document.getElementById("hovL").setAttribute("x2", x);
+  const c = document.getElementById("hovC"); c.setAttribute("cx", x); c.setAttribute("cy", y);
+  const tx = document.getElementById("hovT");
+  tx.textContent = `${nf(p[1])} m · km ${nf(p[0], 1)} · ${t().day} ${p[4]}`;
+  const right = x > W * 0.62; tx.setAttribute("x", right ? x - 10 : x + 10); tx.setAttribute("text-anchor", right ? "end" : "start");
+  if (!hovM) hovM = L.circleMarker([p[2], p[3]], { radius: 8, color: "#fff", weight: 3, fillColor: "#DC143C", fillOpacity: 1, interactive: false }).addTo(map);
+  else hovM.setLatLng([p[2], p[3]]);
+}
+function unscrub() {
+  const hov = document.getElementById("hov"); if (hov) hov.setAttribute("visibility", "hidden");
+  if (hovM) { hovM.remove(); hovM = null; }
+}
+prof.addEventListener("pointermove", scrub);
+prof.addEventListener("pointerdown", scrub);
+prof.addEventListener("pointerleave", unscrub);
+prof.addEventListener("pointercancel", unscrub);
+
+// ---------- Descàrregues ----------
+const DOC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6v18h12V7z"/><path d="M14 3v4h4M9 13h6M9 17h6"/></svg>';
+const PIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 18 9 6l4 7 3-4 5 9z"/></svg>';
+const FILES = [
+  ["pdf/Trekking_EBC_Nepal_2026.pdf", "fPdf", "fPdfM", "2,9 MB", DOC],
+  ["pdf/Trekking_EBC_Nepal_2026_16x9.pdf", "fDeck", "fDeckM", "2,9 MB", DOC],
+  ["gpx/EBC-2026-tracks.zip", "fGpx", "fGpxM", "0,4 MB", PIN]
+];
+function paintFiles() {
+  const L_ = t();
+  $("fh").textContent = L_.files;
+  $("files").innerHTML = FILES.map(([href, n, m, sz, ic]) =>
+    `<a class="file" href="${href}" download>${ic}<span><span class="fn">${L_[n]}</span><br><span class="fm">${L_[m]} · ${sz}</span></span></a>`).join("");
 }
 
 // ---------- Estat ----------
 let cur = 0;
 const $ = id => document.getElementById(id);
-const stat = (n, l) => `<div class="stat"><div class="num">${n}</div><div class="lab">${l}</div></div>`;
+const stat = (n, u, l) => `<div class="stat"><div class="num">${n}${u ? `<small>${u}</small>` : ""}</div><div class="lab">${l}</div></div>`;
 function render(fly) {
   const s = S[cur - 1], L_ = t();
   dayFlags.forEach((b, i) => b.setAttribute("aria-pressed", String(i + 1 === cur)));
@@ -496,8 +591,8 @@ function render(fly) {
     $("h").innerHTML = `<span class="mf allf" aria-hidden="true"></span>${L_.whole}`;
     $("route").textContent = "Lukla → Everest Base Camp → Lukla";
     $("date").textContent = L_.wholeDate;
-    $("stats").innerHTML = stat(S.length, L_.days) + stat(nf(TOTAL) + " km", L_.onFoot) + stat(nf(up) + " m", L_.gainTot) + stat(nf(5364) + " m", "Everest Base Camp");
-    $("pcap").textContent = L_.capAll; $("night").textContent = "";
+    $("stats").innerHTML = stat(S.length, "", L_.days) + stat(nf(TOTAL), "km", L_.onFoot) + stat(nf(up), "m", L_.sGainT) + stat(nf(5364), "m", L_.sEbc);
+    $("pcap").textContent = `${L_.capAll}. ${L_.scrub}`; $("night").textContent = "";
     $("dl").hidden = true; $("all").hidden = true;
     $("wk").hidden = !DATA.wikilocList; if (DATA.wikilocList) { $("wk").href = DATA.wikilocList; $("wk").textContent = L_.wkList; }
     if (fly) map.flyToBounds(allBounds, { padding: [20, 20], animate: !reduce, duration: .6 });
@@ -505,9 +600,9 @@ function render(fly) {
     $("h").innerHTML = `<span class="mf c${(s.day - 1) % 5}" aria-hidden="true"></span>${L_.day} ${s.day}`;
     $("route").textContent = routeText(s);
     $("date").textContent = fdate(s.date);
-    $("stats").innerHTML = stat(nf(s.km, 2) + " km", L_.dist) + stat(nf(s.up) + " m", L_.gain) +
-      stat(nf(s.dn) + " m", L_.loss) + stat(nf(s.max) + " m", s.day === 8 ? `${L_.max} (EBC)` : L_.max);
-    $("pcap").textContent = L_.capOne;
+    $("stats").innerHTML = stat(nf(s.km, 2), "km", L_.dist) + stat(nf(s.up), "m", L_.sGain) +
+      stat(nf(s.dn), "m", L_.sLoss) + stat(nf(s.max), "m", s.day === 8 ? L_.sEbc : L_.sMax);
+    $("pcap").textContent = `${L_.capOne}. ${L_.scrub}`;
     $("night").textContent = s.day === S.length ? L_.end(nf(s.sleepAlt)) : L_.night(s.sleep, nf(s.sleepAlt));
     $("dl").href = s.gpx; $("dl").setAttribute("download", s.gpx.split("/").pop()); $("dl").hidden = false;
     const wl = s.wikiloc || DATA.wikilocList;
@@ -536,7 +631,7 @@ function applyLang() {
   $("all").textContent = L_.all; $("dl").textContent = L_.dl;
   dayFlags.forEach((b, i) => b.setAttribute("aria-label", `${L_.day} ${i + 1}: ${routeText(S[i])}`));
   allFlag.textContent = L_.allFlag; allFlag.setAttribute("aria-label", L_.whole);
-  paintLayers(); paintTheme(); paintFS();
+  paintLayers(); paintTheme(); paintFS(); paintFiles();
   $("foot").innerHTML = `${L_.foot} ${L_.mapby}: © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.` +
     (DATA.wikilocList ? ` <a href="${DATA.wikilocList}" target="_blank" rel="noopener">${L_.wkList}</a>.` : "");
   ebcM.setTooltipContent(`Everest Base Camp · ${nf(5364)} m`);
@@ -593,8 +688,9 @@ document.querySelectorAll(".langs button").forEach(b => b.onclick = () => {
 function goHome(e) { if (e) e.preventDefault(); setFS(false); setLock(false); go(0); scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" }); }
 $("brand").onclick = goHome; $("home").onclick = goHome;
 $("all").onclick = () => go(0);
-$("prev").onclick = () => go(Math.max(0, cur - 1));
-$("next").onclick = () => go(Math.min(S.length, cur + 1));
+function toStage() { $("etapes").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" }); }
+$("prev").onclick = () => { go(Math.max(0, cur - 1)); toStage(); };
+$("next").onclick = () => { go(Math.min(S.length, cur + 1)); toStage(); };
 const CHEV_L = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg>';
 const CHEV_R = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>';
 function where(s) { return s.kind ? t().accl : s.sleep; }
