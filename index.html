@@ -66,20 +66,34 @@
   :is(.langs button, .navlink, .brand, .home, .lock, .all, .btn):focus-visible { outline: 3px solid var(--glacier); outline-offset: 2px; }
 
   /* Mapa */
-  .layout { display: block; }
-  .hero { position: sticky; top: calc(var(--hh) + env(safe-area-inset-top, 0px)); z-index: 900;
-          height: 42svh; min-height: 260px; box-shadow: 0 6px 14px -10px rgba(0,0,0,.45); isolation: isolate; }
-  .rope, main { scroll-margin-top: calc(var(--hh) + env(safe-area-inset-top, 0px) + max(42svh, 260px) + 8px); }
+  .layout { display: flex; flex-direction: column; }
+  .content { display: contents; }
+  .intro { order: 0; } .hero { order: 1; } .rope { order: 2; } .hint { order: 3; } main { order: 4; } footer { order: 5; }
+  .hero { position: relative; height: 54svh; min-height: 300px; isolation: isolate;
+          scroll-margin-top: calc(var(--hh) + env(safe-area-inset-top, 0px)); }
+  .rope, main { scroll-margin-top: calc(var(--hh) + env(safe-area-inset-top, 0px) + 8px); }
+  .intro { padding-bottom: 1rem; }
   .intro { max-width: 760px; margin: 0 auto; padding: 1.3rem 1.25rem .2rem; }
   .intro h1 { margin: 0; font-weight: 700; font-size: clamp(2.2rem, 8vw, 3.4rem); line-height: .95; }
   .intro p { margin: .45rem 0 0; color: var(--ink-soft); max-width: 46ch; }
   @media (min-width: 900px) {
-    .layout { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(400px, 1fr); }
-    .hero { height: calc(100svh - var(--hh) - env(safe-area-inset-top, 0px)); box-shadow: none; }
-    .content { min-width: 0; }
+    .layout { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(400px, 1fr); align-items: start; }
+    .hero { position: sticky; top: calc(var(--hh) + env(safe-area-inset-top, 0px));
+            height: calc(100svh - var(--hh) - env(safe-area-inset-top, 0px)); }
+    .content { display: block; min-width: 0; }
+    .intro { padding-bottom: .2rem; }
     .rope, main { scroll-margin-top: calc(var(--hh) + 8px); }
     .rope-inner { justify-content: flex-start; }
   }
+  .qnav { display: flex; gap: .4rem; margin-left: auto; }
+  .qb { width: 42px; height: 42px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--ink);
+        display: grid; place-items: center; cursor: pointer; padding: 0; }
+  .qb svg { width: 20px; height: 20px; }
+  .qb:disabled { opacity: .3; cursor: default; }
+  .qb:focus-visible { outline: 3px solid var(--glacier); outline-offset: 2px; }
+  #all { display: none; }
+  .head { flex-wrap: nowrap; }
+  .head > div:first-child { min-width: 0; }
   .files { margin-top: 2rem; }
   .files h3 { font: 600 1.3rem "Barlow Condensed", sans-serif; margin: 0 0 .6rem; }
   .file-list { display: grid; gap: .5rem; }
@@ -257,6 +271,10 @@
       <h2 id="h"></h2>
       <p class="route" id="route"></p>
       <p class="date" id="date"></p>
+    </div>
+    <div class="qnav">
+      <button class="qb" id="qprev" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button>
+      <button class="qb" id="qnext" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
     </div>
     <button class="all" id="all" hidden></button>
   </div>
@@ -467,7 +485,7 @@ lockBtn.onclick = () => setLock(!unlocked);
 // ---------- Banderes ----------
 const flags = document.getElementById("flags");
 const allFlag = document.createElement("button");
-allFlag.className = "flag allf"; allFlag.onclick = () => go(0);
+allFlag.className = "flag allf"; allFlag.onclick = () => pick(0);
 flags.appendChild(allFlag);
 const marker = document.createElement("span"); marker.className = "marker"; marker.setAttribute("aria-hidden", "true");
 function placeMarker() {
@@ -479,7 +497,7 @@ addEventListener("resize", () => { placeMarker(); map.invalidateSize(); });
 const dayFlags = S.map(s => {
   const b = document.createElement("button");
   b.className = "flag c" + ((s.day - 1) % 5); b.textContent = s.day; b.setAttribute("aria-pressed", "false");
-  b.onclick = () => go(cur === s.day ? 0 : s.day);
+  b.onclick = () => pick(cur === s.day ? 0 : s.day);
   flags.appendChild(b); return b;
 });
 flags.appendChild(marker);
@@ -688,9 +706,17 @@ document.querySelectorAll(".langs button").forEach(b => b.onclick = () => {
 function goHome(e) { if (e) e.preventDefault(); setFS(false); setLock(false); go(0); scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" }); }
 $("brand").onclick = goHome; $("home").onclick = goHome;
 $("all").onclick = () => go(0);
-function toStage() { $("etapes").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" }); }
-$("prev").onclick = () => { go(Math.max(0, cur - 1)); toStage(); };
-$("next").onclick = () => { go(Math.min(S.length, cur + 1)); toStage(); };
+const mobile = matchMedia("(max-width: 899px)");
+function showMap() {
+  if (!mobile.matches || fsOn) return;
+  const r = hero.getBoundingClientRect(), top = $("brand").closest("header").getBoundingClientRect().bottom;
+  if (r.top < top - 1 || r.bottom > innerHeight + 1) hero.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+}
+function pick(d) { go(d); showMap(); }
+$("prev").onclick = () => pick(Math.max(0, cur - 1));
+$("next").onclick = () => pick(Math.min(S.length, cur + 1));
+$("qprev").onclick = () => pick(Math.max(0, cur - 1));
+$("qnext").onclick = () => pick(Math.min(S.length, cur + 1));
 const CHEV_L = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg>';
 const CHEV_R = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>';
 function where(s) { return s.kind ? t().accl : s.sleep; }
@@ -706,6 +732,8 @@ function pgCard(btn, d, side) {
   btn.setAttribute("aria-label", `${k}: ${label}`);
 }
 function paintPager() {
+  $("qprev").disabled = cur <= 0; $("qnext").disabled = cur >= S.length;
+  $("qprev").setAttribute("aria-label", t().prev); $("qnext").setAttribute("aria-label", t().next);
   pgCard($("prev"), cur >= 1 ? cur - 1 : null, "prev");
   pgCard($("next"), cur < S.length ? cur + 1 : null, "next");
 }
