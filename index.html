@@ -19,11 +19,16 @@
     color-scheme: light;
   }
   @media (prefers-color-scheme: dark) {
-    :root {
+    :root:not([data-theme="light"]) {
       --ink: #E4ECF1; --ink-soft: #9FB2C0; --bg: #13212C; --panel: #1A2C3A; --line: #2B4252;
       --glacier: #8FBCE3; --area: #24435A; --sel: #FF6B5E; --hdr: rgba(19,33,44,.88);
       color-scheme: dark;
     }
+  }
+  :root[data-theme="dark"] {
+    --ink: #E4ECF1; --ink-soft: #9FB2C0; --bg: #13212C; --panel: #1A2C3A; --line: #2B4252;
+    --glacier: #8FBCE3; --area: #24435A; --sel: #FF6B5E; --hdr: rgba(19,33,44,.88);
+    color-scheme: dark;
   }
   * { box-sizing: border-box; }
   html { scroll-padding-top: calc(var(--hh) + env(safe-area-inset-top, 0px) + 8px); }
@@ -65,6 +70,12 @@
   .lock svg { width: 16px; height: 16px; }
   .hero.locked .leaflet-control-zoom { display: none; }
   .leaflet-container { font: inherit; }
+  .leaflet-control-attribution.leaflet-control {
+    background: rgba(255,255,255,.55); font-size: 9px; line-height: 1.4; padding: 0 5px; margin: 0;
+    border-radius: 0 0 6px 0; color: #4A5C6B;
+  }
+  .leaflet-control-attribution a { color: inherit; text-decoration: none; }
+  .hero .lock { top: 22px; }
   .lbl { background: rgba(255,255,255,.92); border: 0; box-shadow: none; border-radius: 4px;
          padding: 1px 6px; font: 500 .72rem/1.3 "Barlow", sans-serif; color: #15232F; }
   .lbl::before { display: none; }
@@ -78,11 +89,13 @@
   .flag { width: 42px; height: 52px; border: 0; padding: 0; cursor: pointer;
           clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 86%, 0 100%);
           font: 600 1.05rem/1 "Barlow Condensed", sans-serif; color: #15232F; transform-origin: top center; transition: transform .2s ease; }
-  .flag:nth-child(5n+1) { background: var(--f-blue); color: #fff; }
-  .flag:nth-child(5n+2) { background: var(--f-white); box-shadow: inset 0 0 0 1px #c9cfd4; }
-  .flag:nth-child(5n+3) { background: var(--f-red); color: #fff; }
-  .flag:nth-child(5n+4) { background: var(--f-green); color: #fff; }
-  .flag:nth-child(5n+5) { background: var(--f-yellow); }
+  .flag.c0 { background: var(--f-blue); color: #fff; }
+  .flag.c1 { background: var(--f-white); box-shadow: inset 0 0 0 1px #c9cfd4; }
+  .flag.c2 { background: var(--f-red); color: #fff; }
+  .flag.c3 { background: var(--f-green); color: #fff; }
+  .flag.c4 { background: var(--f-yellow); }
+  .flag.allf { width: 58px; background: #DC143C; color: #fff; font-size: .95rem;
+               box-shadow: inset 0 0 0 3px #003893; margin-right: 6px; }
   .flag[aria-pressed="true"] { transform: translateY(8px) scale(1.08); }
   .flag:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
   .hint { margin: .2rem 1.25rem 0; font-size: .85rem; color: var(--ink-soft); text-align: center; }
@@ -108,7 +121,8 @@
   .btn { display: inline-block; border-radius: 999px; padding: .55rem 1.1rem; font-weight: 500; text-decoration: none; }
   .btn.primary { background: var(--glacier); color: #fff; }
   .btn.ghost { border: 1px solid var(--line); color: var(--ink); background: var(--panel); }
-  @media (prefers-color-scheme: dark) { .btn.primary { color: #0E1C27; } }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn.primary { color: #0E1C27; } }
+  :root[data-theme="dark"] .btn.primary { color: #0E1C27; }
   .nav { margin-left: auto; display: flex; gap: .4rem; }
   .nav button { background: var(--panel); border: 1px solid var(--line); color: var(--ink); border-radius: 999px;
                 width: 2.6rem; height: 2.6rem; font-size: 1.1rem; cursor: pointer; }
@@ -116,7 +130,18 @@
   footer { max-width: 760px; margin: 0 auto; padding: 0 1.25rem 2rem; font-size: .8rem; color: var(--ink-soft); }
   footer a { color: inherit; }
   @media (prefers-reduced-motion: reduce) { .flag { transition: none; } }
-  @media (max-width: 380px) { .navlink { display: none; } }
+  .icon-btn { display: inline-grid; place-items: center; width: 36px; height: 36px; border-radius: 999px; border: 1px solid var(--line);
+              background: var(--panel); color: var(--ink); cursor: pointer; padding: 0; }
+  .icon-btn svg { width: 18px; height: 18px; }
+  .icon-btn:focus-visible { outline: 3px solid var(--glacier); outline-offset: 2px; }
+  @media (max-width: 460px) { .navlink { display: none; } .bar { gap: .5rem; } }
+  @media (max-width: 350px) { .brand span { display: none; } }
+  /* pantalla completa */
+  .hero.fs { position: fixed; inset: 0; height: 100svh; min-height: 0; z-index: 2000; }
+  .hero.fs .title { display: none; }
+  body.fs-on { overflow: hidden; }
+  .leaflet-control-fs a { display: grid; place-items: center; }
+  .leaflet-control-fs svg { width: 16px; height: 16px; }
 </style>
 </head>
 <body>
@@ -125,6 +150,7 @@
     <button class="home" id="home" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg></button>
     <a class="brand" href="#" id="brand"><svg class="np" viewBox="0 0 400 490" aria-hidden="true"><path d="M8 482 H382 L140 240 H392 L8 8 Z" fill="#DC143C" stroke="#003893" stroke-width="16" stroke-linejoin="miter"/><circle cx="110" cy="175" r="48" fill="#fff"/><circle cx="110" cy="152" r="46" fill="#DC143C"/><polygon fill="#fff" points="110.0,162.0 116.9,173.4 129.8,170.2 126.6,183.1 138.0,190.0 126.6,196.9 129.8,209.8 116.9,206.6 110.0,218.0 103.1,206.6 90.2,209.8 93.4,196.9 82.0,190.0 93.4,183.1 90.2,170.2 103.1,173.4"/><polygon fill="#fff" points="118.0,320.0 127.3,343.2 147.0,327.8 143.5,352.5 168.2,349.0 152.8,368.7 176.0,378.0 152.8,387.3 168.2,407.0 143.5,403.5 147.0,428.2 127.3,412.8 118.0,436.0 108.7,412.8 89.0,428.2 92.5,403.5 67.8,407.0 83.2,387.3 60.0,378.0 83.2,368.7 67.8,349.0 92.5,352.5 89.0,327.8 108.7,343.2"/><circle cx="118" cy="378" r="30" fill="#fff"/></svg><span>EBC 2026</span></a>
     <a class="navlink" href="#etapes" id="navStages">Etapes</a>
+    <button class="icon-btn" id="theme" type="button"></button>
     <div class="langs" role="group" aria-label="Idioma / Language">
       <button data-l="ca" lang="ca">CA</button><button data-l="es" lang="es">ES</button><button data-l="en" lang="en">EN</button>
     </div>
@@ -180,7 +206,7 @@ const S = DATA.stages;
 // ---------- Textos ----------
 const T = {
   ca: { title: "Camp Base de l’Everest", sub: "Del 4 al 16 de novembre de 2026, a peu des de Lukla pel Parc Nacional de Sagarmatha.",
-        home: "Inici", stages: "Etapes", hint: "Toca una bandera per veure cada etapa.", map: "Mapa del recorregut",
+        home: "Inici", allFlag: "Tot", dark: "Mode fosc", light: "Mode clar", fs: "Pantalla completa", fsOut: "Surt de la pantalla completa", lyr: ["Mapa", "Topogràfic", "Satèl·lit"], stages: "Etapes", hint: "Toca una bandera per veure cada etapa.", map: "Mapa del recorregut",
         unlock: "Mou el mapa", lockIt: "Bloqueja el mapa", all: "Veure tot el trek", whole: "Tot el trek",
         wholeDate: "Del 4 al 16 de novembre de 2026", day: "Dia", days: "dies", onFoot: "a peu", gainTot: "de desnivell positiu",
         dist: "distància", gain: "desnivell positiu", loss: "desnivell negatiu", max: "altitud màxima",
@@ -191,7 +217,7 @@ const T = {
         foot: "Distàncies, desnivells i altituds segons Wikiloc; traçats enregistrats amb Gaia GPS. Altitud de l’EBC: cota oficial.",
         mapby: "Mapa" },
   es: { title: "Campo Base del Everest", sub: "Del 4 al 16 de noviembre de 2026, a pie desde Lukla por el Parque Nacional de Sagarmatha.",
-        home: "Inicio", stages: "Etapas", hint: "Toca una bandera para ver cada etapa.", map: "Mapa del recorrido",
+        home: "Inicio", allFlag: "Todo", dark: "Modo oscuro", light: "Modo claro", fs: "Pantalla completa", fsOut: "Salir de la pantalla completa", lyr: ["Mapa", "Topográfico", "Satélite"], stages: "Etapas", hint: "Toca una bandera para ver cada etapa.", map: "Mapa del recorrido",
         unlock: "Mover el mapa", lockIt: "Bloquear el mapa", all: "Ver todo el trek", whole: "Todo el trek",
         wholeDate: "Del 4 al 16 de noviembre de 2026", day: "Día", days: "días", onFoot: "a pie", gainTot: "de desnivel positivo",
         dist: "distancia", gain: "desnivel positivo", loss: "desnivel negativo", max: "altitud máxima",
@@ -202,7 +228,7 @@ const T = {
         foot: "Distancias, desniveles y altitudes según Wikiloc; tracks grabados con Gaia GPS. Altitud del EBC: cota oficial.",
         mapby: "Mapa" },
   en: { title: "Everest Base Camp", sub: "4–16 November 2026, on foot from Lukla through Sagarmatha National Park.",
-        home: "Home", stages: "Stages", hint: "Tap a flag to see each stage.", map: "Route map",
+        home: "Home", allFlag: "All", dark: "Dark mode", light: "Light mode", fs: "Full screen", fsOut: "Exit full screen", lyr: ["Map", "Topographic", "Satellite"], stages: "Stages", hint: "Tap a flag to see each stage.", map: "Route map",
         unlock: "Move the map", lockIt: "Lock the map", all: "See the whole trek", whole: "The whole trek",
         wholeDate: "4–16 November 2026", day: "Day", days: "days", onFoot: "on foot", gainTot: "elevation gain",
         dist: "distance", gain: "elevation gain", loss: "elevation loss", max: "highest point",
@@ -253,12 +279,38 @@ S.forEach(s => {
 const TOTAL = off;
 
 // ---------- Mapa (bloquejat per defecte) ----------
-const map = L.map("map", { zoomControl: false, dragging: false, touchZoom: false, scrollWheelZoom: false,
+const map = L.map("map", { zoomControl: false, attributionControl: false, dragging: false, touchZoom: false, scrollWheelZoom: false,
                            doubleClickZoom: false, boxZoom: false, keyboard: false, tap: false });
+L.control.attribution({ position: "topleft", prefix: false }).addTo(map);
+const OSM_A = '<a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap</a>';
+const BASES = [
+  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: OSM_A }),
+  L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", { maxZoom: 17, subdomains: "abc",
+    attribution: OSM_A + ' · <a href="https://opentopomap.org" target="_blank" rel="noopener">© OpenTopoMap</a>' }),
+  L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", { maxZoom: 18,
+    attribution: '<a href="https://www.esri.com" target="_blank" rel="noopener">© Esri</a>' })
+];
+BASES[0].addTo(map);
+// Control de pantalla completa
+const FS_IN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>';
+const FS_OUT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>';
+let fsBtn;
+const FsCtl = L.Control.extend({ options: { position: "topright" }, onAdd() {
+  const c = L.DomUtil.create("div", "leaflet-bar leaflet-control leaflet-control-fs");
+  fsBtn = L.DomUtil.create("a", "", c); fsBtn.href = "#"; fsBtn.setAttribute("role", "button");
+  L.DomEvent.disableClickPropagation(c);
+  L.DomEvent.on(fsBtn, "click", e => { L.DomEvent.preventDefault(e); toggleFS(); });
+  return c;
+} });
+new FsCtl().addTo(map);
+let layersCtl = null;
+function buildLayers() {
+  if (layersCtl) layersCtl.remove();
+  const names = {}; BASES.forEach((b, i) => names[t().lyr[i]] = b);
+  layersCtl = L.control.layers(names, null, { position: "topright" }).addTo(map);
+}
+buildLayers();
 L.control.zoom({ position: "topright" }).addTo(map);
-L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  maxZoom: 19, attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(map);
 const GLACIER = "#2E5E86", SEL = "#C62828";
 S.forEach(s => {
   const ll = s.pts.map(p => [p[0], p[1]]);
@@ -295,11 +347,14 @@ lockBtn.onclick = () => setLock(!unlocked);
 
 // ---------- Banderes ----------
 const flags = document.getElementById("flags");
-S.forEach(s => {
+const allFlag = document.createElement("button");
+allFlag.className = "flag allf"; allFlag.onclick = () => go(0);
+flags.appendChild(allFlag);
+const dayFlags = S.map(s => {
   const b = document.createElement("button");
-  b.className = "flag"; b.textContent = s.day; b.setAttribute("aria-pressed", "false");
+  b.className = "flag c" + ((s.day - 1) % 5); b.textContent = s.day; b.setAttribute("aria-pressed", "false");
   b.onclick = () => go(cur === s.day ? 0 : s.day);
-  flags.appendChild(b);
+  flags.appendChild(b); return b;
 });
 
 // ---------- Perfil ----------
@@ -335,7 +390,8 @@ const $ = id => document.getElementById(id);
 const stat = (n, l) => `<div class="stat"><div class="num">${n}</div><div class="lab">${l}</div></div>`;
 function render(fly) {
   const s = S[cur - 1], L_ = t();
-  [...flags.children].forEach((b, i) => b.setAttribute("aria-pressed", String(i + 1 === cur)));
+  dayFlags.forEach((b, i) => b.setAttribute("aria-pressed", String(i + 1 === cur)));
+  allFlag.setAttribute("aria-pressed", String(cur === 0));
   S.forEach(x => x.line.setStyle({ color: x === s ? SEL : GLACIER, weight: x === s ? 5 : 3.5, opacity: s && x !== s ? .55 : .95 }));
   if (s) { s.casing.bringToFront(); s.line.bringToFront(); }
   if (!s) {
@@ -362,7 +418,7 @@ function render(fly) {
     $("all").hidden = false;
     if (fly) {
       map.flyToBounds(s.bounds, { padding: [30, 30], maxZoom: 16, animate: !reduce, duration: .6 });
-      flags.children[cur - 1].scrollIntoView({ behavior: reduce ? "auto" : "smooth", inline: "center", block: "nearest" });
+      dayFlags[cur - 1].scrollIntoView({ behavior: reduce ? "auto" : "smooth", inline: "center", block: "nearest" });
     }
   }
   drawProfile(s);
@@ -382,19 +438,63 @@ function applyLang() {
   $("map").setAttribute("aria-label", L_.map); $("prof").setAttribute("aria-label", L_.prof);
   $("all").textContent = L_.all; $("dl").textContent = L_.dl;
   $("prev").setAttribute("aria-label", L_.prev); $("next").setAttribute("aria-label", L_.next);
-  [...flags.children].forEach((b, i) => b.setAttribute("aria-label", `${L_.day} ${i + 1}: ${routeText(S[i])}`));
+  dayFlags.forEach((b, i) => b.setAttribute("aria-label", `${L_.day} ${i + 1}: ${routeText(S[i])}`));
+  allFlag.textContent = L_.allFlag; allFlag.setAttribute("aria-label", L_.whole);
+  buildLayers(); paintTheme(); paintFS();
   $("foot").innerHTML = `${L_.foot} ${L_.mapby}: © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.` +
     (DATA.wikilocList ? ` <a href="${DATA.wikilocList}" target="_blank" rel="noopener">${L_.wkList}</a>.` : "");
   ebcM.setTooltipContent(`Everest Base Camp · ${nf(5364)} m`);
   document.querySelectorAll(".langs button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.l === lang)));
   setLock(unlocked); render(false);
 }
+// ---------- Tema clar / fosc ----------
+const SUN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+const MOON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>';
+const sysDark = matchMedia("(prefers-color-scheme: dark)");
+const isDark = () => { const f = document.documentElement.dataset.theme; return f ? f === "dark" : sysDark.matches; };
+function paintTheme() {
+  const d = isDark(), b = $("theme");
+  b.innerHTML = d ? SUN : MOON;
+  b.setAttribute("aria-label", d ? t().light : t().dark); b.title = d ? t().light : t().dark;
+  drawProfile(S[cur - 1]);
+}
+try { const th = localStorage.getItem("theme"); if (th === "light" || th === "dark") document.documentElement.dataset.theme = th; } catch (e) {}
+$("theme").onclick = () => {
+  const next = isDark() ? "light" : "dark";
+  document.documentElement.dataset.theme = next;
+  try { localStorage.setItem("theme", next); } catch (e) {}
+  paintTheme();
+};
+if (sysDark.addEventListener) sysDark.addEventListener("change", paintTheme);
+
+// ---------- Pantalla completa ----------
+let fsOn = false, lockBefore = false;
+function paintFS() {
+  if (!fsBtn) return;
+  fsBtn.innerHTML = fsOn ? FS_OUT : FS_IN;
+  fsBtn.title = fsOn ? t().fsOut : t().fs; fsBtn.setAttribute("aria-label", fsBtn.title);
+  lockBtn.hidden = fsOn;
+}
+function setFS(on) {
+  if (on === fsOn) return;
+  fsOn = on;
+  if (on) { lockBefore = unlocked; setLock(true); } else { setLock(lockBefore); }
+  hero.classList.toggle("fs", on); document.body.classList.toggle("fs-on", on);
+  if (on && hero.requestFullscreen && !document.fullscreenElement) hero.requestFullscreen().catch(() => {});
+  if (!on && document.fullscreenElement) document.exitFullscreen().catch(() => {});
+  paintFS();
+  setTimeout(() => map.invalidateSize(), 60);
+}
+function toggleFS() { setFS(!fsOn); }
+document.addEventListener("fullscreenchange", () => { if (!document.fullscreenElement && fsOn) setFS(false); });
+addEventListener("keydown", e => { if (e.key === "Escape" && fsOn) setFS(false); });
+
 document.querySelectorAll(".langs button").forEach(b => b.onclick = () => {
   lang = b.dataset.l;
   try { localStorage.setItem("lang", lang); } catch (e) {}
   applyLang();
 });
-function goHome(e) { if (e) e.preventDefault(); setLock(false); go(0); scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" }); }
+function goHome(e) { if (e) e.preventDefault(); setFS(false); setLock(false); go(0); scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" }); }
 $("brand").onclick = goHome; $("home").onclick = goHome;
 $("all").onclick = () => go(0);
 $("prev").onclick = () => go(Math.max(1, cur - 1));
