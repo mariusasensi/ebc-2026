@@ -97,9 +97,11 @@
   .photos { margin: 0 0 1.1rem; }
   .ph { font: 600 1.3rem "Barlow Condensed", sans-serif; margin: 0 0 .6rem; }
   .strip { display: grid; grid-auto-flow: column; grid-auto-columns: 74%; gap: .6rem; overflow-x: auto;
-           scroll-snap-type: x mandatory; scrollbar-width: none; margin: 0 -1.25rem; padding: 0 1.25rem; }
+           scroll-snap-type: x mandatory; scrollbar-width: none; margin: 0 -1.25rem; padding: 0 1.25rem;
+           scroll-padding-inline: 1.25rem; }
+  .strip:not(.grid)::after { content: ""; width: .65rem; }
   .strip::-webkit-scrollbar { display: none; }
-  .strip.grid { grid-auto-flow: row; grid-template-columns: repeat(3, 1fr); overflow: visible; margin: 0; padding: 0; gap: .35rem; }
+  .strip.grid { grid-auto-flow: row; grid-template-columns: repeat(3, 1fr); overflow: visible; margin: 0; padding: 0; gap: .35rem; scroll-padding-inline: 0; }
   @media (min-width: 600px) { .strip { grid-auto-columns: 46%; } .strip.grid { grid-template-columns: repeat(4, 1fr); } }
   .ph-i { position: relative; display: block; padding: 0; border: 0; border-radius: 10px; overflow: hidden; cursor: zoom-in;
           aspect-ratio: 1; background: var(--area); scroll-snap-align: start; }
@@ -893,6 +895,9 @@ function fromHash() {
 addEventListener("hashchange", fromHash);
 applyLang();
 fromHash();
+if ("serviceWorker" in navigator && location.protocol === "https:") {
+  addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+}
 </script>
 </body>
 </html>
