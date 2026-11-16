@@ -143,6 +143,19 @@
   #prof { touch-action: pan-y; cursor: crosshair; }
   .hov-t { font: 600 15px "Barlow", sans-serif; }
   #map { position: absolute; inset: 0; background: var(--area); }
+  .play-wrap { position: absolute; z-index: 600; left: 12px; bottom: 14px; display: flex; align-items: center; gap: .5rem; }
+  .play { display: inline-flex; align-items: center; gap: .45rem; background: #DC143C; color: #fff; border: 0; border-radius: 999px;
+          padding: .5rem .95rem .5rem .75rem; font: 600 .88rem "Barlow", sans-serif; box-shadow: 0 1px 4px rgba(0,0,0,.3); cursor: pointer; }
+  .play svg { width: 14px; height: 14px; }
+  .play:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+  .play-c { background: rgba(10,22,32,.8); color: #fff; border-radius: 999px; padding: .35rem .75rem; font: 600 .82rem "Barlow", sans-serif; white-space: nowrap; }
+  .hero.fs .play-wrap { bottom: calc(14px + env(safe-area-inset-bottom, 0px)); }
+  .peak { display: flex; align-items: center; justify-content: center; color: #4B3B2E; font-size: 13px; line-height: 1;
+          text-shadow: 0 0 2px #fff, 0 0 2px #fff, 0 0 2px #fff; }
+  .plbl { background: rgba(255,255,255,.85); border: 0; box-shadow: none; border-radius: 4px; padding: 0 5px;
+          font: 500 .68rem/1.35 "Barlow", sans-serif; color: #4B3B2E; }
+  .plbl::before { display: none; }
+  .plbl b { font-weight: 600; }
   .lock { position: absolute; z-index: 600; top: 12px; left: 12px; display: inline-flex; align-items: center; gap: .4rem;
           background: #fff; color: #15232F; border: 0; border-radius: 999px; padding: .45rem .8rem .45rem .6rem;
           font: 600 .85rem "Barlow", sans-serif; box-shadow: 0 1px 4px rgba(0,0,0,.25); cursor: pointer; }
@@ -288,6 +301,7 @@
 <div class="hero locked" id="hero">
   <div id="map" role="region"></div>
   <button class="lock" id="lock" type="button" aria-pressed="false"></button>
+  <div class="play-wrap"><button class="play" id="play" type="button"></button><span class="play-c" id="playc" hidden></span></div>
 </div>
 
 <div class="content">
@@ -364,7 +378,7 @@ const S = DATA.stages;
 // ---------- Textos ----------
 const T = {
   ca: { title: "Camp Base de l’Everest", sub: "Del 4 al 16 de novembre de 2026, a peu des de Lukla pel Parc Nacional de Sagarmatha.",
-        home: "Inici", allFlag: "Tot", phStage: "Fotos del dia", phAll: "Fotos del trek", photo: "Foto", goStage: "Veure l’etapa", close: "Tanca", pPrev: "Foto anterior", pNext: "Foto següent", sGain: "pujada", sLoss: "baixada", sMax: "alt. màxima", sGainT: "pujada total", sEbc: "Camp Base", files: "Material del viatge", fPdf: "Resum en PDF", fPdfM: "15 pàgines · format vertical", fDeck: "Presentació en PDF", fDeckM: "16 pàgines · format 16:9, per a pantalla", fGpx: "Tots els tracks GPX", fGpxM: "13 fitxers en un zip", scrub: "Llisca pel perfil per seguir el recorregut al mapa.", dark: "Mode fosc", light: "Mode clar", fs: "Pantalla completa", fsOut: "Surt de la pantalla completa", lyr: ["Mapa", "Topogràfic", "Satèl·lit"], lyrTitle: "Tipus de mapa", stages: "Etapes", hint: "Toca una bandera per veure cada etapa.", map: "Mapa del recorregut",
+        home: "Inici", allFlag: "Tot", play: "Reprodueix el trek", stop: "Atura", phStage: "Fotos del dia", phAll: "Fotos del trek", photo: "Foto", goStage: "Veure l’etapa", close: "Tanca", pPrev: "Foto anterior", pNext: "Foto següent", sGain: "pujada", sLoss: "baixada", sMax: "alt. màxima", sGainT: "pujada total", sEbc: "Camp Base", files: "Material del viatge", fPdf: "Resum en PDF", fPdfM: "15 pàgines · format vertical", fDeck: "Presentació en PDF", fDeckM: "16 pàgines · format 16:9, per a pantalla", fGpx: "Tots els tracks GPX", fGpxM: "13 fitxers en un zip", scrub: "Llisca pel perfil per seguir el recorregut al mapa.", dark: "Mode fosc", light: "Mode clar", fs: "Pantalla completa", fsOut: "Surt de la pantalla completa", lyr: ["Mapa", "Topogràfic", "Satèl·lit"], lyrTitle: "Tipus de mapa", stages: "Etapes", hint: "Toca una bandera per veure cada etapa.", map: "Mapa del recorregut",
         unlock: "Mou el mapa", lockIt: "Bloqueja el mapa", all: "Veure tot el trek", whole: "Tot el trek",
         wholeDate: "Del 4 al 16 de novembre de 2026", day: "Dia", days: "dies", onFoot: "a peu", gainTot: "de desnivell positiu",
         dist: "distància", gain: "desnivell positiu", loss: "desnivell negatiu", max: "altitud màxima",
@@ -375,7 +389,7 @@ const T = {
         foot: "Distàncies, desnivells i altituds segons Wikiloc; traçats enregistrats amb Gaia GPS. Altitud de l’EBC: cota oficial.",
         mapby: "Mapa" },
   es: { title: "Campo Base del Everest", sub: "Del 4 al 16 de noviembre de 2026, a pie desde Lukla por el Parque Nacional de Sagarmatha.",
-        home: "Inicio", allFlag: "Todo", phStage: "Fotos del día", phAll: "Fotos del trek", photo: "Foto", goStage: "Ver la etapa", close: "Cerrar", pPrev: "Foto anterior", pNext: "Foto siguiente", sGain: "subida", sLoss: "bajada", sMax: "alt. máxima", sGainT: "subida total", sEbc: "Campo Base", files: "Material del viaje", fPdf: "Resumen en PDF", fPdfM: "15 páginas · formato vertical · en catalán", fDeck: "Presentación en PDF", fDeckM: "16 páginas · formato 16:9 · en catalán", fGpx: "Todos los tracks GPX", fGpxM: "13 archivos en un zip", scrub: "Desliza por el perfil para seguir el recorrido en el mapa.", dark: "Modo oscuro", light: "Modo claro", fs: "Pantalla completa", fsOut: "Salir de la pantalla completa", lyr: ["Mapa", "Topográfico", "Satélite"], lyrTitle: "Tipo de mapa", stages: "Etapas", hint: "Toca una bandera para ver cada etapa.", map: "Mapa del recorrido",
+        home: "Inicio", allFlag: "Todo", play: "Reproducir el trek", stop: "Parar", phStage: "Fotos del día", phAll: "Fotos del trek", photo: "Foto", goStage: "Ver la etapa", close: "Cerrar", pPrev: "Foto anterior", pNext: "Foto siguiente", sGain: "subida", sLoss: "bajada", sMax: "alt. máxima", sGainT: "subida total", sEbc: "Campo Base", files: "Material del viaje", fPdf: "Resumen en PDF", fPdfM: "15 páginas · formato vertical · en catalán", fDeck: "Presentación en PDF", fDeckM: "16 páginas · formato 16:9 · en catalán", fGpx: "Todos los tracks GPX", fGpxM: "13 archivos en un zip", scrub: "Desliza por el perfil para seguir el recorrido en el mapa.", dark: "Modo oscuro", light: "Modo claro", fs: "Pantalla completa", fsOut: "Salir de la pantalla completa", lyr: ["Mapa", "Topográfico", "Satélite"], lyrTitle: "Tipo de mapa", stages: "Etapas", hint: "Toca una bandera para ver cada etapa.", map: "Mapa del recorrido",
         unlock: "Mover el mapa", lockIt: "Bloquear el mapa", all: "Ver todo el trek", whole: "Todo el trek",
         wholeDate: "Del 4 al 16 de noviembre de 2026", day: "Día", days: "días", onFoot: "a pie", gainTot: "de desnivel positivo",
         dist: "distancia", gain: "desnivel positivo", loss: "desnivel negativo", max: "altitud máxima",
@@ -386,7 +400,7 @@ const T = {
         foot: "Distancias, desniveles y altitudes según Wikiloc; tracks grabados con Gaia GPS. Altitud del EBC: cota oficial.",
         mapby: "Mapa" },
   en: { title: "Everest Base Camp", sub: "4–16 November 2026, on foot from Lukla through Sagarmatha National Park.",
-        home: "Home", allFlag: "All", phStage: "Photos of the day", phAll: "Trek photos", photo: "Photo", goStage: "See the stage", close: "Close", pPrev: "Previous photo", pNext: "Next photo", sGain: "ascent", sLoss: "descent", sMax: "highest point", sGainT: "total ascent", sEbc: "Base Camp", files: "Trip downloads", fPdf: "PDF summary", fPdfM: "15 pages · portrait · in Catalan", fDeck: "PDF slides", fDeckM: "16 pages · 16:9 for screens · in Catalan", fGpx: "All GPX tracks", fGpxM: "13 files in a zip", scrub: "Slide along the profile to follow the route on the map.", dark: "Dark mode", light: "Light mode", fs: "Full screen", fsOut: "Exit full screen", lyr: ["Map", "Topographic", "Satellite"], lyrTitle: "Map style", stages: "Stages", hint: "Tap a flag to see each stage.", map: "Route map",
+        home: "Home", allFlag: "All", play: "Play the trek", stop: "Stop", phStage: "Photos of the day", phAll: "Trek photos", photo: "Photo", goStage: "See the stage", close: "Close", pPrev: "Previous photo", pNext: "Next photo", sGain: "ascent", sLoss: "descent", sMax: "highest point", sGainT: "total ascent", sEbc: "Base Camp", files: "Trip downloads", fPdf: "PDF summary", fPdfM: "15 pages · portrait · in Catalan", fDeck: "PDF slides", fDeckM: "16 pages · 16:9 for screens · in Catalan", fGpx: "All GPX tracks", fGpxM: "13 files in a zip", scrub: "Slide along the profile to follow the route on the map.", dark: "Dark mode", light: "Light mode", fs: "Full screen", fsOut: "Exit full screen", lyr: ["Map", "Topographic", "Satellite"], lyrTitle: "Map style", stages: "Stages", hint: "Tap a flag to see each stage.", map: "Route map",
         unlock: "Move the map", lockIt: "Lock the map", all: "See the whole trek", whole: "The whole trek",
         wholeDate: "4–16 November 2026", day: "Day", days: "days", onFoot: "on foot", gainTot: "elevation gain",
         dist: "distance", gain: "elevation gain", loss: "elevation loss", max: "highest point",
@@ -518,6 +532,15 @@ villages.forEach(([n, p]) => {
   L.circleMarker(p, { radius: 5, color: "#15232F", weight: 2, fillColor: "#fff", fillOpacity: 1 })
     .bindTooltip(n, { permanent: true, direction: "right", offset: [6, 0], className: "lbl" }).addTo(map);
 });
+// Cims principals
+const PEAKS = [["Everest", 8849, 27.9881, 86.9250], ["Lhotse", 8516, 27.9617, 86.9333], ["Nuptse", 7861, 27.9670, 86.8860],
+               ["Pumori", 7161, 28.0147, 86.8286], ["Ama Dablam", 6812, 27.8617, 86.8613], ["Thamserku", 6623, 27.7867, 86.7914],
+               ["Kala Patthar", 5644, 27.9958, 86.8285]];
+const peakLayer = L.layerGroup().addTo(map);
+const peakMarks = PEAKS.map(([n, a, la, lo]) => L.marker([la, lo], { keyboard: false,
+    icon: L.divIcon({ className: "peak", html: "▲", iconSize: [14, 14], iconAnchor: [7, 9] }) })
+  .bindTooltip("", { permanent: true, direction: "top", offset: [0, -6], className: "plbl" }).addTo(peakLayer));
+function paintPeaks() { peakMarks.forEach((m, i) => m.setTooltipContent(`<b>${PEAKS[i][0]}</b> ${nf(PEAKS[i][1])} m`)); }
 const ebcM = L.marker(DATA.ebc, { icon: L.divIcon({ className: "ebc", html: "★", iconSize: [26, 26], iconAnchor: [13, 13] }) })
   .bindTooltip("", { permanent: true, direction: "right", offset: [12, 0], className: "lbl" }).addTo(map);
 map.fitBounds(allBounds, { padding: [20, 20] });
@@ -591,9 +614,17 @@ const FLAT = [];
 S.forEach(s => s.pts.forEach((p, i) => FLAT.push([s.cum[i], p[2], p[0], p[1], s.day])));
 let hovM = null;
 function scrub(ev) {
+  if (playing) return;
   const r = prof.getBoundingClientRect(); if (!r.width) return;
   const vx = (ev.clientX - r.left) / r.width * W;
-  const km = Math.max(0, Math.min(TOTAL, (vx - PAD.l) / (W - PAD.l - PAD.r) * TOTAL));
+  showAt(Math.max(0, Math.min(TOTAL, (vx - PAD.l) / (W - PAD.l - PAD.r) * TOTAL)));
+}
+function idxAt(km) {
+  let lo = 0, hi = FLAT.length - 1;
+  while (hi - lo > 1) { const m = (lo + hi) >> 1; if (FLAT[m][0] < km) lo = m; else hi = m; }
+  return Math.abs(FLAT[lo][0] - km) < Math.abs(FLAT[hi][0] - km) ? lo : hi;
+}
+function showAt(km) {
   let lo = 0, hi = FLAT.length - 1;
   while (hi - lo > 1) { const m = (lo + hi) >> 1; if (FLAT[m][0] < km) lo = m; else hi = m; }
   const p = Math.abs(FLAT[lo][0] - km) < Math.abs(FLAT[hi][0] - km) ? FLAT[lo] : FLAT[hi];
@@ -609,6 +640,7 @@ function scrub(ev) {
   else hovM.setLatLng([p[2], p[3]]);
 }
 function unscrub() {
+  if (playing) return;
   const hov = document.getElementById("hov"); if (hov) hov.setAttribute("visibility", "hidden");
   if (hovM) { hovM.remove(); hovM = null; }
 }
@@ -663,6 +695,41 @@ async function zipAll(e) {
 // ---------- Estat ----------
 let cur = 0;
 const $ = id => document.getElementById(id);
+// ---------- Animació del trek ----------
+const PLAY_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>';
+const STOP_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>';
+let playing = false, raf = 0, animLine = null, t0 = 0;
+const DUR = 22000;
+function paintPlay() {
+  const b = $("play"); b.innerHTML = (playing ? STOP_SVG : PLAY_SVG) + `<span>${playing ? t().stop : t().play}</span>`;
+  b.setAttribute("aria-pressed", String(playing));
+}
+function frame(ts) {
+  if (!t0) t0 = ts;
+  const f = Math.min(1, (ts - t0) / DUR), km = f * TOTAL, i = idxAt(km);
+  animLine.setLatLngs(FLAT.slice(0, i + 1).map(p => [p[2], p[3]]));
+  showAt(km);
+  $("playc").textContent = `${t().day} ${FLAT[i][4]} · ${nf(FLAT[i][0])} km · ${nf(FLAT[i][1])} m`;
+  if (f < 1) raf = requestAnimationFrame(frame); else setTimeout(stopPlay, 1600);
+}
+function startPlay() {
+  if (cur) go(0);
+  playing = true; t0 = 0;
+  S.forEach(x => x.line.setStyle({ color: "#7F95A6", weight: 2.5, opacity: .5 }));
+  animLine = L.polyline([], { color: "#DC143C", weight: 5, opacity: 1, interactive: false }).addTo(map);
+  map.fitBounds(allBounds, { padding: [20, 20], animate: false });
+  $("playc").hidden = false; paintPlay();
+  if (reduce) { animLine.setLatLngs(FLAT.map(p => [p[2], p[3]])); showAt(TOTAL); $("playc").textContent = `${S.length} ${t().days} · ${nf(TOTAL)} km`; return; }
+  raf = requestAnimationFrame(frame);
+}
+function stopPlay() {
+  if (!playing) return;
+  playing = false; cancelAnimationFrame(raf);
+  if (animLine) { animLine.remove(); animLine = null; }
+  $("playc").hidden = true; paintPlay(); unscrub(); render(false);
+}
+$("play").onclick = () => playing ? stopPlay() : startPlay();
+
 // ---------- Fotos ----------
 // img/PXL_AAAAMMDD_NN.webp, 4 per dia
 const PER_DAY = 4;
@@ -799,7 +866,7 @@ function applyLang() {
   $("all").textContent = L_.all; $("dl").textContent = L_.dl;
   dayFlags.forEach((b, i) => b.setAttribute("aria-label", `${L_.day} ${i + 1}: ${routeText(S[i])}`));
   allFlag.textContent = L_.allFlag; allFlag.setAttribute("aria-label", L_.whole);
-  paintLayers(); paintTheme(); paintFS(); paintFiles();
+  paintLayers(); paintTheme(); paintFS(); paintFiles(); paintPlay(); paintPeaks();
   $("foot").innerHTML = `${L_.foot} ${L_.mapby}: © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.` +
     (DATA.wikilocList ? ` <a href="${DATA.wikilocList}" target="_blank" rel="noopener">${L_.wkList}</a>.` : "");
   ebcM.setTooltipContent(`Everest Base Camp · ${nf(5364)} m`);
@@ -862,7 +929,7 @@ function showMap() {
   const r = hero.getBoundingClientRect(), top = $("brand").closest("header").getBoundingClientRect().bottom;
   if (r.top < top - 1 || r.bottom > innerHeight + 1) hero.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
 }
-function pick(d) { go(d); showMap(); }
+function pick(d) { stopPlay(); go(d); showMap(); }
 $("prev").onclick = () => pick(Math.max(0, cur - 1));
 $("next").onclick = () => pick(Math.min(S.length, cur + 1));
 $("qprev").onclick = () => pick(Math.max(0, cur - 1));
