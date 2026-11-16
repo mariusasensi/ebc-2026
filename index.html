@@ -55,7 +55,7 @@
   .langs button { background: none; border: 0; color: var(--ink-soft); font: 600 .8rem "Barlow", sans-serif;
                   padding: .35rem .6rem; cursor: pointer; }
   .langs button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
-  :is(.langs button, .navlink, .brand, .home, .lock, .all, .nav button, .btn):focus-visible { outline: 3px solid var(--glacier); outline-offset: 2px; }
+  :is(.langs button, .navlink, .brand, .home, .lock, .all, .btn):focus-visible { outline: 3px solid var(--glacier); outline-offset: 2px; }
 
   /* Mapa */
   .hero { position: relative; height: 58svh; min-height: 340px; }
@@ -84,7 +84,10 @@
   /* Corda de banderes */
   .rope { position: relative; padding: 1.1rem 0 .4rem; overflow-x: auto; scrollbar-width: none; }
   .rope::-webkit-scrollbar { display: none; }
-  .rope-inner { position: relative; display: flex; gap: 6px; padding: 0 1.25rem; width: max-content; min-width: 100%; justify-content: center; }
+  .rope-inner { position: relative; display: flex; gap: 6px; padding: 0 1.25rem 18px; width: max-content; min-width: 100%; justify-content: center; }
+  .marker { position: absolute; top: 66px; left: 0; width: 0; height: 0; pointer-events: none;
+            border-left: 7px solid transparent; border-right: 7px solid transparent; border-bottom: 9px solid var(--ink);
+            transform: translateX(-50%); transition: left .25s ease; }
   .rope-inner::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: var(--ink-soft); opacity: .5; }
   .flag { width: 42px; height: 52px; border: 0; padding: 0; cursor: pointer;
           clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 86%, 0 100%);
@@ -96,7 +99,19 @@
   .flag.c4 { background: var(--f-yellow); }
   .flag.allf { width: 58px; background: #DC143C; color: #fff; font-size: .95rem;
                box-shadow: inset 0 0 0 3px #003893; margin-right: 6px; }
-  .flag[aria-pressed="true"] { transform: translateY(8px) scale(1.08); }
+  .flag { transition: transform .2s ease, opacity .2s ease, filter .2s ease; }
+  .rope-inner.has-sel .flag:not([aria-pressed="true"]) { opacity: .42; filter: saturate(.6); }
+  .rope-inner.has-sel .flag:not([aria-pressed="true"]):hover { opacity: .8; }
+  .flag[aria-pressed="true"] { opacity: 1; }
+  /* mini bandera de la fitxa */
+  .mf { display: inline-block; width: 16px; height: 21px; margin-right: 10px; vertical-align: -1px;
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 86%, 0 100%); }
+  .mf.c0 { background: var(--f-blue); } .mf.c1 { background: var(--f-white); box-shadow: inset 0 0 0 1px #c9cfd4; }
+  .mf.c2 { background: var(--f-red); } .mf.c3 { background: var(--f-green); } .mf.c4 { background: var(--f-yellow); }
+  .mf.allf { background: #DC143C; box-shadow: inset 0 0 0 2px #003893; }
+  .pin { border-radius: 50%; border: 3px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,.35); }
+  .pin.a { background: #fff; border-color: #DC143C; }
+  .pin.b { background: #DC143C; }
   .flag:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
   .hint { margin: .2rem 1.25rem 0; font-size: .85rem; color: var(--ink-soft); text-align: center; }
 
@@ -123,13 +138,22 @@
   .btn.ghost { border: 1px solid var(--line); color: var(--ink); background: var(--panel); }
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn.primary { color: #0E1C27; } }
   :root[data-theme="dark"] .btn.primary { color: #0E1C27; }
-  .nav { margin-left: auto; display: flex; gap: .4rem; }
-  .nav button { background: var(--panel); border: 1px solid var(--line); color: var(--ink); border-radius: 999px;
-                width: 2.6rem; height: 2.6rem; font-size: 1.1rem; cursor: pointer; }
-  .nav button:disabled { opacity: .35; cursor: default; }
+  .nav { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin-top: 1.6rem; }
+  .pg { display: flex; align-items: center; gap: .7rem; min-height: 64px; padding: .6rem .9rem; cursor: pointer;
+        background: var(--panel); border: 1px solid var(--line); border-radius: 12px; color: var(--ink); text-align: left;
+        font: inherit; transition: border-color .15s ease, background .15s ease; }
+  .pg:hover { border-color: var(--glacier); }
+  .pg[hidden] { display: flex; visibility: hidden; }
+  .pg.next { justify-content: flex-end; text-align: right; }
+  .pg .chev { width: 20px; height: 20px; flex: none; color: var(--ink-soft); }
+  .pg .txt { display: grid; min-width: 0; }
+  .pg .k { font-size: .78rem; color: var(--ink-soft); }
+  .pg .v { font: 600 1.1rem/1.15 "Barlow Condensed", sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pg .mf { margin-right: 0; width: 14px; height: 18px; flex: none; }
+  .pg:focus-visible { outline: 3px solid var(--glacier); outline-offset: 2px; }
   footer { max-width: 760px; margin: 0 auto; padding: 0 1.25rem 2rem; font-size: .8rem; color: var(--ink-soft); }
   footer a { color: inherit; }
-  @media (prefers-reduced-motion: reduce) { .flag { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .flag, .marker { transition: none; } }
   .icon-btn { display: inline-grid; place-items: center; width: 36px; height: 36px; border-radius: 999px; border: 1px solid var(--line);
               background: var(--panel); color: var(--ink); cursor: pointer; padding: 0; }
   .icon-btn svg { width: 18px; height: 18px; }
@@ -141,6 +165,22 @@
   .hero.fs .title { display: none; }
   body.fs-on { overflow: hidden; }
   .leaflet-control-fs a { display: grid; place-items: center; }
+  .lyr { position: relative; }
+  .lyr-btn { width: 34px; height: 34px; display: grid; place-items: center; padding: 0; cursor: pointer;
+             background: #fff; color: #15232F; border: 2px solid rgba(0,0,0,.2); border-radius: 4px; background-clip: padding-box; }
+  .lyr-btn svg { width: 18px; height: 18px; }
+  .lyr-btn[aria-expanded="true"] { color: #DC143C; }
+  .lyr-btn:focus-visible, .lyr-item:focus-visible { outline: 3px solid #2E5E86; outline-offset: 2px; }
+  .lyr-menu { position: absolute; right: 42px; top: 0; background: #fff; border-radius: 12px; padding: 6px;
+              box-shadow: 0 4px 16px rgba(0,0,0,.25); display: grid; gap: 2px; min-width: 168px; }
+  .lyr-menu[hidden] { display: none; }
+  .lyr-item { display: flex; align-items: center; gap: 10px; width: 100%; padding: 5px 8px 5px 5px; border: 0; border-radius: 8px;
+              background: none; cursor: pointer; font: 500 .9rem "Barlow", sans-serif; color: #15232F; text-align: left; }
+  .lyr-item:hover { background: #EEF3F6; }
+  .lyr-item img { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; background: #C9DCEB;
+                  box-shadow: inset 0 0 0 1px rgba(0,0,0,.1); }
+  .lyr-item[aria-checked="true"] img { outline: 3px solid #DC143C; outline-offset: 1px; }
+  .lyr-item[aria-checked="true"] span { font-weight: 600; }
   .leaflet-control-fs svg { width: 16px; height: 16px; }
 </style>
 </head>
@@ -189,11 +229,11 @@
   <div class="actions">
     <a class="btn primary" id="dl" href="#" download hidden></a>
     <a class="btn ghost" id="wk" href="#" target="_blank" rel="noopener" hidden></a>
-    <div class="nav">
-      <button id="prev">‹</button>
-      <button id="next">›</button>
-    </div>
   </div>
+  <nav class="nav" id="pager">
+    <button class="pg prev" id="prev" type="button"></button>
+    <button class="pg next" id="next" type="button"></button>
+  </nav>
 </main>
 
 <footer><p id="foot"></p></footer>
@@ -206,35 +246,35 @@ const S = DATA.stages;
 // ---------- Textos ----------
 const T = {
   ca: { title: "Camp Base de l’Everest", sub: "Del 4 al 16 de novembre de 2026, a peu des de Lukla pel Parc Nacional de Sagarmatha.",
-        home: "Inici", allFlag: "Tot", dark: "Mode fosc", light: "Mode clar", fs: "Pantalla completa", fsOut: "Surt de la pantalla completa", lyr: ["Mapa", "Topogràfic", "Satèl·lit"], stages: "Etapes", hint: "Toca una bandera per veure cada etapa.", map: "Mapa del recorregut",
+        home: "Inici", allFlag: "Tot", dark: "Mode fosc", light: "Mode clar", fs: "Pantalla completa", fsOut: "Surt de la pantalla completa", lyr: ["Mapa", "Topogràfic", "Satèl·lit"], lyrTitle: "Tipus de mapa", stages: "Etapes", hint: "Toca una bandera per veure cada etapa.", map: "Mapa del recorregut",
         unlock: "Mou el mapa", lockIt: "Bloqueja el mapa", all: "Veure tot el trek", whole: "Tot el trek",
         wholeDate: "Del 4 al 16 de novembre de 2026", day: "Dia", days: "dies", onFoot: "a peu", gainTot: "de desnivell positiu",
         dist: "distància", gain: "desnivell positiu", loss: "desnivell negatiu", max: "altitud màxima",
         capAll: "Perfil d’elevació de les 13 etapes", capOne: "On queda aquesta etapa dins el trek", prof: "Perfil d’elevació",
         night: (n, a) => `Nit a ${n} (${a} m).`, end: a => `Final del trek a Lukla (${a} m).`,
-        dl: "Descarrega el GPX", wk: "Veure a Wikiloc", wkList: "Les 13 rutes a Wikiloc", prev: "Etapa anterior", next: "Etapa següent",
+        dl: "Descarrega el GPX", wk: "Veure a Wikiloc", wkList: "Les 13 rutes a Wikiloc", prev: "Anterior", next: "Següent", first: "Comença pel dia 1",
         accl: "Aclimatació", accl6: a => `Aclimatació per Dingboche fins als ${a} m`,
         foot: "Distàncies, desnivells i altituds segons Wikiloc; traçats enregistrats amb Gaia GPS. Altitud de l’EBC: cota oficial.",
         mapby: "Mapa" },
   es: { title: "Campo Base del Everest", sub: "Del 4 al 16 de noviembre de 2026, a pie desde Lukla por el Parque Nacional de Sagarmatha.",
-        home: "Inicio", allFlag: "Todo", dark: "Modo oscuro", light: "Modo claro", fs: "Pantalla completa", fsOut: "Salir de la pantalla completa", lyr: ["Mapa", "Topográfico", "Satélite"], stages: "Etapas", hint: "Toca una bandera para ver cada etapa.", map: "Mapa del recorrido",
+        home: "Inicio", allFlag: "Todo", dark: "Modo oscuro", light: "Modo claro", fs: "Pantalla completa", fsOut: "Salir de la pantalla completa", lyr: ["Mapa", "Topográfico", "Satélite"], lyrTitle: "Tipo de mapa", stages: "Etapas", hint: "Toca una bandera para ver cada etapa.", map: "Mapa del recorrido",
         unlock: "Mover el mapa", lockIt: "Bloquear el mapa", all: "Ver todo el trek", whole: "Todo el trek",
         wholeDate: "Del 4 al 16 de noviembre de 2026", day: "Día", days: "días", onFoot: "a pie", gainTot: "de desnivel positivo",
         dist: "distancia", gain: "desnivel positivo", loss: "desnivel negativo", max: "altitud máxima",
         capAll: "Perfil de elevación de las 13 etapas", capOne: "Dónde queda esta etapa dentro del trek", prof: "Perfil de elevación",
         night: (n, a) => `Noche en ${n} (${a} m).`, end: a => `Fin del trek en Lukla (${a} m).`,
-        dl: "Descargar el GPX", wk: "Ver en Wikiloc", wkList: "Las 13 rutas en Wikiloc", prev: "Etapa anterior", next: "Etapa siguiente",
+        dl: "Descargar el GPX", wk: "Ver en Wikiloc", wkList: "Las 13 rutas en Wikiloc", prev: "Anterior", next: "Siguiente", first: "Empieza por el día 1",
         accl: "Aclimatación", accl6: a => `Aclimatación en Dingboche hasta los ${a} m`,
         foot: "Distancias, desniveles y altitudes según Wikiloc; tracks grabados con Gaia GPS. Altitud del EBC: cota oficial.",
         mapby: "Mapa" },
   en: { title: "Everest Base Camp", sub: "4–16 November 2026, on foot from Lukla through Sagarmatha National Park.",
-        home: "Home", allFlag: "All", dark: "Dark mode", light: "Light mode", fs: "Full screen", fsOut: "Exit full screen", lyr: ["Map", "Topographic", "Satellite"], stages: "Stages", hint: "Tap a flag to see each stage.", map: "Route map",
+        home: "Home", allFlag: "All", dark: "Dark mode", light: "Light mode", fs: "Full screen", fsOut: "Exit full screen", lyr: ["Map", "Topographic", "Satellite"], lyrTitle: "Map style", stages: "Stages", hint: "Tap a flag to see each stage.", map: "Route map",
         unlock: "Move the map", lockIt: "Lock the map", all: "See the whole trek", whole: "The whole trek",
         wholeDate: "4–16 November 2026", day: "Day", days: "days", onFoot: "on foot", gainTot: "elevation gain",
         dist: "distance", gain: "elevation gain", loss: "elevation loss", max: "highest point",
         capAll: "Elevation profile of all 13 stages", capOne: "Where this stage sits in the trek", prof: "Elevation profile",
         night: (n, a) => `Night in ${n} (${a} m).`, end: a => `End of the trek in Lukla (${a} m).`,
-        dl: "Download GPX", wk: "View on Wikiloc", wkList: "All 13 trails on Wikiloc", prev: "Previous stage", next: "Next stage",
+        dl: "Download GPX", wk: "View on Wikiloc", wkList: "All 13 trails on Wikiloc", prev: "Previous", next: "Next", first: "Start with day 1",
         accl: "Acclimatisation", accl6: a => `Acclimatisation hike above Dingboche to ${a} m`,
         foot: "Distances, elevation gain and altitudes from Wikiloc; tracks recorded with Gaia GPS. EBC altitude: official figure.",
         mapby: "Map" }
@@ -303,15 +343,47 @@ const FsCtl = L.Control.extend({ options: { position: "topright" }, onAdd() {
   return c;
 } });
 new FsCtl().addTo(map);
-let layersCtl = null;
-function buildLayers() {
-  if (layersCtl) layersCtl.remove();
-  const names = {}; BASES.forEach((b, i) => names[t().lyr[i]] = b);
-  layersCtl = L.control.layers(names, null, { position: "topright" }).addTo(map);
+// Selector de capes propi
+const THUMBS = ["https://tile.openstreetmap.org/11/1517/859.png",
+                "https://a.tile.opentopomap.org/11/1517/859.png",
+                "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/11/859/1517"];
+const LYR_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 8l10 5 10-5-10-5z"/><path d="m2 13 10 5 10-5"/></svg>';
+let curBase = 0, lyrBtn, lyrMenu, lyrItems = [];
+function setBase(i) {
+  if (i === curBase) return;
+  map.removeLayer(BASES[curBase]); BASES[i].addTo(map); BASES[i].bringToBack(); curBase = i; paintLayers();
 }
-buildLayers();
+function openLyr(o) {
+  lyrMenu.hidden = !o; lyrBtn.setAttribute("aria-expanded", String(o));
+  if (o) (lyrItems[curBase] || lyrItems[0]).focus();
+}
+const LyrCtl = L.Control.extend({ options: { position: "topright" }, onAdd() {
+  const c = L.DomUtil.create("div", "leaflet-control lyr");
+  lyrBtn = L.DomUtil.create("button", "lyr-btn", c); lyrBtn.type = "button"; lyrBtn.innerHTML = LYR_SVG;
+  lyrBtn.setAttribute("aria-haspopup", "true"); lyrBtn.setAttribute("aria-expanded", "false");
+  lyrMenu = L.DomUtil.create("div", "lyr-menu", c); lyrMenu.setAttribute("role", "menu"); lyrMenu.hidden = true;
+  BASES.forEach((b, i) => {
+    const it = L.DomUtil.create("button", "lyr-item", lyrMenu); it.type = "button";
+    it.setAttribute("role", "menuitemradio");
+    it.innerHTML = `<img src="${THUMBS[i]}" alt="" loading="lazy" width="44" height="44"><span></span>`;
+    it.onclick = () => { setBase(i); openLyr(false); lyrBtn.focus(); };
+    lyrItems.push(it);
+  });
+  L.DomEvent.disableClickPropagation(c); L.DomEvent.disableScrollPropagation(c);
+  lyrBtn.onclick = () => openLyr(lyrMenu.hidden);
+  return c;
+} });
+new LyrCtl().addTo(map);
+document.addEventListener("click", e => { if (lyrMenu && !lyrMenu.hidden && !e.target.closest(".lyr")) openLyr(false); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && lyrMenu && !lyrMenu.hidden) { openLyr(false); lyrBtn.focus(); } });
+function paintLayers() {
+  if (!lyrBtn) return;
+  const L_ = t(); lyrBtn.title = `${L_.lyrTitle}: ${L_.lyr[curBase]}`; lyrBtn.setAttribute("aria-label", lyrBtn.title);
+  lyrMenu.setAttribute("aria-label", L_.lyrTitle);
+  lyrItems.forEach((it, i) => { it.querySelector("span").textContent = L_.lyr[i]; it.setAttribute("aria-checked", String(i === curBase)); });
+}
 L.control.zoom({ position: "topright" }).addTo(map);
-const GLACIER = "#2E5E86", SEL = "#C62828";
+const GLACIER = "#2E5E86", SEL = "#DC143C";
 S.forEach(s => {
   const ll = s.pts.map(p => [p[0], p[1]]);
   s.casing = L.polyline(ll, { color: "#fff", weight: 7, opacity: .9, interactive: false }).addTo(map);
@@ -319,6 +391,7 @@ S.forEach(s => {
   s.line.on("click", () => go(s.day));
   s.bounds = L.latLngBounds(ll);
 });
+const ends = L.layerGroup().addTo(map);
 const allBounds = L.latLngBounds([]);
 S.forEach(s => allBounds.extend(s.bounds));
 const seen = new Set(), villages = [["Lukla", DATA.lukla]];
@@ -350,12 +423,20 @@ const flags = document.getElementById("flags");
 const allFlag = document.createElement("button");
 allFlag.className = "flag allf"; allFlag.onclick = () => go(0);
 flags.appendChild(allFlag);
+const marker = document.createElement("span"); marker.className = "marker"; marker.setAttribute("aria-hidden", "true");
+function placeMarker() {
+  const f = cur ? dayFlags[cur - 1] : allFlag;
+  if (!f) return;
+  marker.style.left = (f.offsetLeft + f.offsetWidth / 2) + "px";
+}
+addEventListener("resize", placeMarker);
 const dayFlags = S.map(s => {
   const b = document.createElement("button");
   b.className = "flag c" + ((s.day - 1) % 5); b.textContent = s.day; b.setAttribute("aria-pressed", "false");
   b.onclick = () => go(cur === s.day ? 0 : s.day);
   flags.appendChild(b); return b;
 });
+flags.appendChild(marker);
 
 // ---------- Perfil ----------
 const prof = document.getElementById("prof");
@@ -392,11 +473,27 @@ function render(fly) {
   const s = S[cur - 1], L_ = t();
   dayFlags.forEach((b, i) => b.setAttribute("aria-pressed", String(i + 1 === cur)));
   allFlag.setAttribute("aria-pressed", String(cur === 0));
-  S.forEach(x => x.line.setStyle({ color: x === s ? SEL : GLACIER, weight: x === s ? 5 : 3.5, opacity: s && x !== s ? .55 : .95 }));
+  flags.classList.toggle("has-sel", cur > 0);
+  S.forEach(x => {
+    const on = x === s;
+    x.line.setStyle(s ? { color: on ? SEL : "#7F95A6", weight: on ? 5 : 2.5, opacity: on ? 1 : .55 }
+                      : { color: GLACIER, weight: 3.5, opacity: .95 });
+    x.casing.setStyle({ weight: on ? 10 : 7, opacity: s && !on ? 0 : .9 });
+  });
   if (s) { s.casing.bringToFront(); s.line.bringToFront(); }
+  ends.clearLayers();
+  if (s) {
+    const a = s.pts[0], z = s.pts[s.pts.length - 1];
+    const pin = (p, c, sz) => L.marker([p[0], p[1]], { interactive: false, keyboard: false,
+      icon: L.divIcon({ className: "pin " + c, iconSize: [sz, sz], iconAnchor: [sz / 2, sz / 2] }) });
+    const loop = hav(a, z) < 0.15;
+    ends.addLayer(pin(a, "a", loop ? 18 : 16));
+    if (!loop) ends.addLayer(pin(z, "b", 16));
+  }
+  placeMarker();
   if (!s) {
     const up = S.reduce((a, x) => a + x.up, 0);
-    $("h").textContent = L_.whole;
+    $("h").innerHTML = `<span class="mf allf" aria-hidden="true"></span>${L_.whole}`;
     $("route").textContent = "Lukla → Everest Base Camp → Lukla";
     $("date").textContent = L_.wholeDate;
     $("stats").innerHTML = stat(S.length, L_.days) + stat(nf(TOTAL) + " km", L_.onFoot) + stat(nf(up) + " m", L_.gainTot) + stat(nf(5364) + " m", "Everest Base Camp");
@@ -405,7 +502,7 @@ function render(fly) {
     $("wk").hidden = !DATA.wikilocList; if (DATA.wikilocList) { $("wk").href = DATA.wikilocList; $("wk").textContent = L_.wkList; }
     if (fly) map.flyToBounds(allBounds, { padding: [20, 20], animate: !reduce, duration: .6 });
   } else {
-    $("h").textContent = `${L_.day} ${s.day}`;
+    $("h").innerHTML = `<span class="mf c${(s.day - 1) % 5}" aria-hidden="true"></span>${L_.day} ${s.day}`;
     $("route").textContent = routeText(s);
     $("date").textContent = fdate(s.date);
     $("stats").innerHTML = stat(nf(s.km, 2) + " km", L_.dist) + stat(nf(s.up) + " m", L_.gain) +
@@ -422,7 +519,7 @@ function render(fly) {
     }
   }
   drawProfile(s);
-  $("prev").disabled = cur <= 1; $("next").disabled = cur >= S.length;
+  paintPager();
 }
 function go(day, fromHash) {
   cur = day; render(true);
@@ -437,10 +534,9 @@ function applyLang() {
   $("navStages").textContent = L_.stages; $("home").setAttribute("aria-label", L_.home); $("home").title = L_.home; $("hint").textContent = L_.hint;
   $("map").setAttribute("aria-label", L_.map); $("prof").setAttribute("aria-label", L_.prof);
   $("all").textContent = L_.all; $("dl").textContent = L_.dl;
-  $("prev").setAttribute("aria-label", L_.prev); $("next").setAttribute("aria-label", L_.next);
   dayFlags.forEach((b, i) => b.setAttribute("aria-label", `${L_.day} ${i + 1}: ${routeText(S[i])}`));
   allFlag.textContent = L_.allFlag; allFlag.setAttribute("aria-label", L_.whole);
-  buildLayers(); paintTheme(); paintFS();
+  paintLayers(); paintTheme(); paintFS();
   $("foot").innerHTML = `${L_.foot} ${L_.mapby}: © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.` +
     (DATA.wikilocList ? ` <a href="${DATA.wikilocList}" target="_blank" rel="noopener">${L_.wkList}</a>.` : "");
   ebcM.setTooltipContent(`Everest Base Camp · ${nf(5364)} m`);
@@ -497,8 +593,26 @@ document.querySelectorAll(".langs button").forEach(b => b.onclick = () => {
 function goHome(e) { if (e) e.preventDefault(); setFS(false); setLock(false); go(0); scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" }); }
 $("brand").onclick = goHome; $("home").onclick = goHome;
 $("all").onclick = () => go(0);
-$("prev").onclick = () => go(Math.max(1, cur - 1));
+$("prev").onclick = () => go(Math.max(0, cur - 1));
 $("next").onclick = () => go(Math.min(S.length, cur + 1));
+const CHEV_L = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg>';
+const CHEV_R = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>';
+function where(s) { return s.kind ? t().accl : s.sleep; }
+function pgCard(btn, d, side) {
+  const L_ = t();
+  if (d === null) { btn.hidden = true; btn.innerHTML = ""; return; }
+  btn.hidden = false;
+  const label = d === 0 ? L_.whole : `${L_.day} ${d} · ${where(S[d - 1])}`;
+  const flag = `<span class="mf ${d === 0 ? "allf" : "c" + ((d - 1) % 5)}" aria-hidden="true"></span>`;
+  const k = cur === 0 && side === "next" ? L_.first : (side === "prev" ? L_.prev : L_.next);
+  const txt = `<span class="txt"><span class="k">${k}</span><span class="v">${label}</span></span>`;
+  btn.innerHTML = side === "prev" ? CHEV_L + flag + txt : txt + flag + CHEV_R;
+  btn.setAttribute("aria-label", `${k}: ${label}`);
+}
+function paintPager() {
+  pgCard($("prev"), cur >= 1 ? cur - 1 : null, "prev");
+  pgCard($("next"), cur < S.length ? cur + 1 : null, "next");
+}
 function fromHash() {
   const m = location.hash.match(/^#dia-(\d+)$/); const d = m ? +m[1] : 0;
   if (location.hash === "#etapes") return;
