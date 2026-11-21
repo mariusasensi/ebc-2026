@@ -21,7 +21,7 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏔️</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&family=Courier+Prime:wght@400;700&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
   :root {
@@ -32,7 +32,7 @@
     color-scheme: light;
   }
   @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
+    :root:not([data-theme="light"]):not([data-theme="exp"]) {
       --ink: #E4ECF1; --ink-soft: #9FB2C0; --bg: #13212C; --panel: #1A2C3A; --line: #2B4252;
       --glacier: #8FBCE3; --area: #24435A; --sel: #FF6B5E; --hdr: rgba(19,33,44,.88);
       color-scheme: dark;
@@ -257,7 +257,45 @@
   .btn { display: inline-block; border-radius: 999px; padding: .55rem 1.1rem; font-weight: 500; text-decoration: none; }
   .btn.primary { background: var(--glacier); color: #fff; }
   .btn.ghost { border: 1px solid var(--line); color: var(--ink); background: var(--panel); }
-  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn.primary { color: #0E1C27; } }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]):not([data-theme="exp"]) .btn.primary { color: #0E1C27; } }
+  /* ===== Tema Expedició 1953 ===== */
+  :root[data-theme="exp"] {
+    --ink: #2B2118; --ink-soft: #6B5A45; --bg: #EDE3CC; --panel: #F6EEDB; --line: #C9B48C;
+    --glacier: #3E5A6B; --area: #E1D0A9; --sel: #8E2B1E; --hdr: rgba(237,227,204,.94);
+    --f-blue: #4C6A86; --f-white: #F3EBD8; --f-red: #9C3A2C; --f-green: #5D7550; --f-yellow: #C9A54A;
+    color-scheme: light;
+  }
+  [data-theme="exp"] body { font-family: "Courier Prime", "Courier New", monospace;
+    background-image: radial-gradient(ellipse at 20% 0%, rgba(255,250,235,.7), transparent 60%),
+                      radial-gradient(ellipse at 100% 100%, rgba(150,110,60,.18), transparent 55%); background-attachment: fixed; }
+  [data-theme="exp"] :is(h1, h2, h3, .num, .brand, .pg .v, .lb-d, .flag) { font-family: "Special Elite", "Courier Prime", monospace; font-weight: 400; }
+  [data-theme="exp"] :is(h1, h2) { letter-spacing: .02em; }
+  [data-theme="exp"] .intro h1 { text-transform: uppercase; font-size: clamp(1.9rem, 7vw, 2.9rem); }
+  [data-theme="exp"] header { border-bottom: 3px double var(--line); }
+  [data-theme="exp"] :is(.stats, .profile, .file, .pg, .qb, .all, .btn, .icon-btn, .home, .langs) { border-radius: 2px; }
+  [data-theme="exp"] :is(.stats, .profile, .file, .pg) { box-shadow: 2px 2px 0 rgba(107,90,69,.18); }
+  [data-theme="exp"] .btn.primary { background: var(--ink); color: var(--bg); }
+  [data-theme="exp"] .langs button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+  [data-theme="exp"] .leaflet-tile-pane { filter: sepia(.55) saturate(.75) contrast(.95) brightness(1.03); }
+  [data-theme="exp"] :is(.lbl, .plbl) { background: rgba(246,238,219,.92); color: #2B2118; font-family: "Courier Prime", monospace; }
+  [data-theme="exp"] .flag.c0, [data-theme="exp"] .flag.c2, [data-theme="exp"] .flag.c3 { color: #F6EEDB; }
+  [data-theme="exp"] .flag.allf, [data-theme="exp"] .mf.allf { filter: sepia(.45) saturate(.8); }
+  [data-theme="exp"] .marker { border-bottom-color: var(--ink); }
+  [data-theme="exp"] .play { background: var(--sel); }
+  [data-theme="exp"] .stat .num small { font-family: "Courier Prime", monospace; }
+  /* menú de temes */
+  .thm { position: relative; }
+  .thm-menu { position: absolute; right: 0; top: 44px; z-index: 10; min-width: 190px; background: var(--panel); color: var(--ink);
+              border: 1px solid var(--line); border-radius: 10px; padding: 5px; box-shadow: 0 6px 18px rgba(0,0,0,.18); display: grid; gap: 2px; }
+  .thm-menu[hidden] { display: none; }
+  .thm-menu button { display: flex; align-items: center; gap: .6rem; width: 100%; border: 0; background: none; color: inherit;
+                     padding: .5rem .6rem; border-radius: 7px; font: 500 .92rem "Barlow", sans-serif; cursor: pointer; text-align: left; }
+  .thm-menu button:hover { background: var(--bg); }
+  .thm-menu button[aria-checked="true"] { font-weight: 600; }
+  .thm-menu button[aria-checked="true"]::after { content: "✓"; margin-left: auto; color: var(--sel); }
+  .thm-menu svg { width: 18px; height: 18px; flex: none; }
+  .thm-menu button:focus-visible { outline: 3px solid var(--glacier); outline-offset: 1px; }
+  [data-theme="exp"] .thm-menu button { font-family: "Courier Prime", monospace; }
   :root[data-theme="dark"] .btn.primary { color: #0E1C27; }
   .nav { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin-top: 1.6rem; }
   .pg { display: flex; align-items: center; gap: .7rem; min-height: 64px; padding: .6rem .9rem; cursor: pointer;
@@ -311,7 +349,14 @@
     <button class="home" id="home" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg></button>
     <a class="brand" href="#" id="brand"><svg class="np" viewBox="0 0 400 490" aria-hidden="true"><path d="M8 482 H382 L140 240 H392 L8 8 Z" fill="#DC143C" stroke="#003893" stroke-width="16" stroke-linejoin="miter"/><circle cx="110" cy="175" r="48" fill="#fff"/><circle cx="110" cy="152" r="46" fill="#DC143C"/><polygon fill="#fff" points="110.0,162.0 116.9,173.4 129.8,170.2 126.6,183.1 138.0,190.0 126.6,196.9 129.8,209.8 116.9,206.6 110.0,218.0 103.1,206.6 90.2,209.8 93.4,196.9 82.0,190.0 93.4,183.1 90.2,170.2 103.1,173.4"/><polygon fill="#fff" points="118.0,320.0 127.3,343.2 147.0,327.8 143.5,352.5 168.2,349.0 152.8,368.7 176.0,378.0 152.8,387.3 168.2,407.0 143.5,403.5 147.0,428.2 127.3,412.8 118.0,436.0 108.7,412.8 89.0,428.2 92.5,403.5 67.8,407.0 83.2,387.3 60.0,378.0 83.2,368.7 67.8,349.0 92.5,352.5 89.0,327.8 108.7,343.2"/><circle cx="118" cy="378" r="30" fill="#fff"/></svg><span>EBC 2026</span></a>
     <a class="navlink" href="#etapes" id="navStages">Etapes</a>
-    <button class="icon-btn" id="theme" type="button"></button>
+    <div class="thm">
+      <button class="icon-btn" id="theme" type="button" aria-haspopup="true" aria-expanded="false"></button>
+      <div class="thm-menu" id="thmMenu" role="menu" hidden>
+        <button type="button" role="menuitemradio" data-th="light"></button>
+        <button type="button" role="menuitemradio" data-th="dark"></button>
+        <button type="button" role="menuitemradio" data-th="exp"></button>
+      </div>
+    </div>
     <div class="langs" role="group" aria-label="Idioma / Language">
       <button data-l="ca" lang="ca">CA</button><button data-l="es" lang="es">ES</button><button data-l="en" lang="en">EN</button>
     </div>
@@ -401,7 +446,7 @@ const S = DATA.stages;
 // ---------- Textos ----------
 const T = {
   ca: { title: "Camp Base de l’Everest", sub: "Del 4 al 16 de novembre de 2026, a peu des de Lukla pel Parc Nacional de Sagarmatha.",
-        home: "Inici", allFlag: "Tot", share: "Comparteix", copied: "Enllaç copiat", altOn: "Colors per altitud", legend: "Altitud", play: "Reprodueix el trek", stop: "Atura", phStage: "Fotos del dia", phAll: "Fotos del trek", photo: "Foto", goStage: "Veure l’etapa", close: "Tanca", pPrev: "Foto anterior", pNext: "Foto següent", sGain: "pujada", sLoss: "baixada", sMax: "alt. màxima", sGainT: "pujada total", sEbc: "Camp Base", files: "Material del viatge", fPdf: "Resum en PDF", fPdfM: "15 pàgines · format vertical", fDeck: "Presentació en PDF", fDeckM: "16 pàgines · format 16:9, per a pantalla", fGpx: "Tots els tracks GPX", fGpxM: "13 fitxers en un zip", scrub: "Llisca pel perfil per seguir el recorregut al mapa.", dark: "Mode fosc", light: "Mode clar", fs: "Pantalla completa", fsOut: "Surt de la pantalla completa", lyr: ["Mapa", "Topogràfic", "Satèl·lit"], lyrTitle: "Tipus de mapa", stages: "Etapes", hint: "Toca una bandera per veure cada etapa.", map: "Mapa del recorregut",
+        home: "Inici", allFlag: "Tot", thLight: "Clar", thDark: "Fosc", thExp: "Expedició 1953", thTitle: "Estil", share: "Comparteix", copied: "Enllaç copiat", altOn: "Colors per altitud", legend: "Altitud", play: "Reprodueix el trek", stop: "Atura", phStage: "Fotos del dia", phAll: "Fotos del trek", photo: "Foto", goStage: "Veure l’etapa", close: "Tanca", pPrev: "Foto anterior", pNext: "Foto següent", sGain: "pujada", sLoss: "baixada", sMax: "alt. màxima", sGainT: "pujada total", sEbc: "Camp Base", files: "Material del viatge", fPdf: "Resum en PDF", fPdfM: "15 pàgines · format vertical", fDeck: "Presentació en PDF", fDeckM: "16 pàgines · format 16:9, per a pantalla", fGpx: "Tots els tracks GPX", fGpxM: "13 fitxers en un zip", scrub: "Llisca pel perfil per seguir el recorregut al mapa.", dark: "Mode fosc", light: "Mode clar", fs: "Pantalla completa", fsOut: "Surt de la pantalla completa", lyr: ["Mapa", "Topogràfic", "Satèl·lit"], lyrTitle: "Tipus de mapa", stages: "Etapes", hint: "Toca una bandera per veure cada etapa.", map: "Mapa del recorregut",
         unlock: "Mou el mapa", lockIt: "Bloqueja el mapa", all: "Veure tot el trek", whole: "Tot el trek",
         wholeDate: "Del 4 al 16 de novembre de 2026", day: "Dia", days: "dies", onFoot: "a peu", gainTot: "de desnivell positiu",
         dist: "distància", gain: "desnivell positiu", loss: "desnivell negatiu", max: "altitud màxima",
@@ -412,7 +457,7 @@ const T = {
         foot: "Distàncies, desnivells i altituds segons Wikiloc; traçats enregistrats amb Gaia GPS. Altitud de l’EBC: cota oficial.",
         mapby: "Mapa" },
   es: { title: "Campo Base del Everest", sub: "Del 4 al 16 de noviembre de 2026, a pie desde Lukla por el Parque Nacional de Sagarmatha.",
-        home: "Inicio", allFlag: "Todo", share: "Compartir", copied: "Enlace copiado", altOn: "Colores por altitud", legend: "Altitud", play: "Reproducir el trek", stop: "Parar", phStage: "Fotos del día", phAll: "Fotos del trek", photo: "Foto", goStage: "Ver la etapa", close: "Cerrar", pPrev: "Foto anterior", pNext: "Foto siguiente", sGain: "subida", sLoss: "bajada", sMax: "alt. máxima", sGainT: "subida total", sEbc: "Campo Base", files: "Material del viaje", fPdf: "Resumen en PDF", fPdfM: "15 páginas · formato vertical · en catalán", fDeck: "Presentación en PDF", fDeckM: "16 páginas · formato 16:9 · en catalán", fGpx: "Todos los tracks GPX", fGpxM: "13 archivos en un zip", scrub: "Desliza por el perfil para seguir el recorrido en el mapa.", dark: "Modo oscuro", light: "Modo claro", fs: "Pantalla completa", fsOut: "Salir de la pantalla completa", lyr: ["Mapa", "Topográfico", "Satélite"], lyrTitle: "Tipo de mapa", stages: "Etapas", hint: "Toca una bandera para ver cada etapa.", map: "Mapa del recorrido",
+        home: "Inicio", allFlag: "Todo", thLight: "Claro", thDark: "Oscuro", thExp: "Expedición 1953", thTitle: "Estilo", share: "Compartir", copied: "Enlace copiado", altOn: "Colores por altitud", legend: "Altitud", play: "Reproducir el trek", stop: "Parar", phStage: "Fotos del día", phAll: "Fotos del trek", photo: "Foto", goStage: "Ver la etapa", close: "Cerrar", pPrev: "Foto anterior", pNext: "Foto siguiente", sGain: "subida", sLoss: "bajada", sMax: "alt. máxima", sGainT: "subida total", sEbc: "Campo Base", files: "Material del viaje", fPdf: "Resumen en PDF", fPdfM: "15 páginas · formato vertical · en catalán", fDeck: "Presentación en PDF", fDeckM: "16 páginas · formato 16:9 · en catalán", fGpx: "Todos los tracks GPX", fGpxM: "13 archivos en un zip", scrub: "Desliza por el perfil para seguir el recorrido en el mapa.", dark: "Modo oscuro", light: "Modo claro", fs: "Pantalla completa", fsOut: "Salir de la pantalla completa", lyr: ["Mapa", "Topográfico", "Satélite"], lyrTitle: "Tipo de mapa", stages: "Etapas", hint: "Toca una bandera para ver cada etapa.", map: "Mapa del recorrido",
         unlock: "Mover el mapa", lockIt: "Bloquear el mapa", all: "Ver todo el trek", whole: "Todo el trek",
         wholeDate: "Del 4 al 16 de noviembre de 2026", day: "Día", days: "días", onFoot: "a pie", gainTot: "de desnivel positivo",
         dist: "distancia", gain: "desnivel positivo", loss: "desnivel negativo", max: "altitud máxima",
@@ -423,7 +468,7 @@ const T = {
         foot: "Distancias, desniveles y altitudes según Wikiloc; tracks grabados con Gaia GPS. Altitud del EBC: cota oficial.",
         mapby: "Mapa" },
   en: { title: "Everest Base Camp", sub: "4–16 November 2026, on foot from Lukla through Sagarmatha National Park.",
-        home: "Home", allFlag: "All", share: "Share", copied: "Link copied", altOn: "Colour by altitude", legend: "Altitude", play: "Play the trek", stop: "Stop", phStage: "Photos of the day", phAll: "Trek photos", photo: "Photo", goStage: "See the stage", close: "Close", pPrev: "Previous photo", pNext: "Next photo", sGain: "ascent", sLoss: "descent", sMax: "highest point", sGainT: "total ascent", sEbc: "Base Camp", files: "Trip downloads", fPdf: "PDF summary", fPdfM: "15 pages · portrait · in Catalan", fDeck: "PDF slides", fDeckM: "16 pages · 16:9 for screens · in Catalan", fGpx: "All GPX tracks", fGpxM: "13 files in a zip", scrub: "Slide along the profile to follow the route on the map.", dark: "Dark mode", light: "Light mode", fs: "Full screen", fsOut: "Exit full screen", lyr: ["Map", "Topographic", "Satellite"], lyrTitle: "Map style", stages: "Stages", hint: "Tap a flag to see each stage.", map: "Route map",
+        home: "Home", allFlag: "All", thLight: "Light", thDark: "Dark", thExp: "1953 Expedition", thTitle: "Style", share: "Share", copied: "Link copied", altOn: "Colour by altitude", legend: "Altitude", play: "Play the trek", stop: "Stop", phStage: "Photos of the day", phAll: "Trek photos", photo: "Photo", goStage: "See the stage", close: "Close", pPrev: "Previous photo", pNext: "Next photo", sGain: "ascent", sLoss: "descent", sMax: "highest point", sGainT: "total ascent", sEbc: "Base Camp", files: "Trip downloads", fPdf: "PDF summary", fPdfM: "15 pages · portrait · in Catalan", fDeck: "PDF slides", fDeckM: "16 pages · 16:9 for screens · in Catalan", fGpx: "All GPX tracks", fGpxM: "13 files in a zip", scrub: "Slide along the profile to follow the route on the map.", dark: "Dark mode", light: "Light mode", fs: "Full screen", fsOut: "Exit full screen", lyr: ["Map", "Topographic", "Satellite"], lyrTitle: "Map style", stages: "Stages", hint: "Tap a flag to see each stage.", map: "Route map",
         unlock: "Move the map", lockIt: "Lock the map", all: "See the whole trek", whole: "The whole trek",
         wholeDate: "4–16 November 2026", day: "Day", days: "days", onFoot: "on foot", gainTot: "elevation gain",
         dist: "distance", gain: "elevation gain", loss: "elevation loss", max: "highest point",
@@ -538,7 +583,7 @@ function paintLayers() {
   lyrItems.forEach((it, i) => { it.querySelector("span").textContent = L_.lyr[i]; it.setAttribute("aria-checked", String(i === curBase)); });
 }
 L.control.zoom({ position: "topright" }).addTo(map);
-const GLACIER = "#2E5E86", SEL = "#DC143C";
+let GLACIER = "#2E5E86", SEL = "#DC143C";
 S.forEach(s => {
   const ll = s.pts.map(p => [p[0], p[1]]);
   s.casing = L.polyline(ll, { color: "#fff", weight: 7, opacity: .9, interactive: false }).addTo(map);
@@ -963,20 +1008,31 @@ function applyLang() {
 const SUN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
 const MOON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>';
 const sysDark = matchMedia("(prefers-color-scheme: dark)");
-const isDark = () => { const f = document.documentElement.dataset.theme; return f ? f === "dark" : sysDark.matches; };
+const COMPASS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg>';
+const curTheme = () => { const f = document.documentElement.dataset.theme; return f || (sysDark.matches ? "dark" : "light"); };
+const isDark = () => curTheme() === "dark";
+const TH_ICON = { light: SUN, dark: MOON, exp: COMPASS };
 function paintTheme() {
-  const d = isDark(), b = $("theme");
-  b.innerHTML = d ? SUN : MOON;
-  b.setAttribute("aria-label", d ? t().light : t().dark); b.title = d ? t().light : t().dark;
+  const th = curTheme(), b = $("theme"), L_ = t();
+  b.innerHTML = TH_ICON[th];
+  b.setAttribute("aria-label", `${L_.thTitle}: ${L_["th" + th[0].toUpperCase() + th.slice(1)]}`); b.title = b.getAttribute("aria-label");
+  document.querySelectorAll("#thmMenu button").forEach(x => {
+    const k = x.dataset.th; x.innerHTML = TH_ICON[k] + `<span>${L_["th" + k[0].toUpperCase() + k.slice(1)]}</span>`;
+    x.setAttribute("aria-checked", String(k === th));
+  });
+  GLACIER = th === "exp" ? "#3E5A6B" : "#2E5E86"; SEL = th === "exp" ? "#8E2B1E" : "#DC143C";
   drawProfile(S[cur - 1]);
 }
-try { const th = localStorage.getItem("theme"); if (th === "light" || th === "dark") document.documentElement.dataset.theme = th; } catch (e) {}
-$("theme").onclick = () => {
-  const next = isDark() ? "light" : "dark";
-  document.documentElement.dataset.theme = next;
-  try { localStorage.setItem("theme", next); } catch (e) {}
-  paintTheme();
-};
+try { const th = localStorage.getItem("theme"); if (["light", "dark", "exp"].includes(th)) document.documentElement.dataset.theme = th; } catch (e) {}
+function openThm(o) { $("thmMenu").hidden = !o; $("theme").setAttribute("aria-expanded", String(o)); if (o) $("thmMenu").querySelector('[aria-checked="true"]')?.focus(); }
+$("theme").onclick = () => openThm($("thmMenu").hidden);
+document.querySelectorAll("#thmMenu button").forEach(x => x.onclick = () => {
+  document.documentElement.dataset.theme = x.dataset.th;
+  try { localStorage.setItem("theme", x.dataset.th); } catch (e) {}
+  openThm(false); $("theme").focus(); paintTheme(); render(false);
+});
+document.addEventListener("click", e => { if (!$("thmMenu").hidden && !e.target.closest(".thm")) openThm(false); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("thmMenu").hidden) { openThm(false); $("theme").focus(); } });
 if (sysDark.addEventListener) sysDark.addEventListener("change", paintTheme);
 
 // ---------- Pantalla completa ----------
