@@ -63,8 +63,11 @@
   .home { display: inline-grid; place-items: center; width: 36px; height: 36px; border-radius: 999px; border: 1px solid var(--line);
           background: var(--panel); color: var(--ink); cursor: pointer; padding: 0; margin-left: -4px; }
   .home svg { width: 18px; height: 18px; }
-  .navlink { color: var(--ink); text-decoration: none; font-weight: 500; font-size: .95rem; padding: .3rem .2rem; }
-  .langs { display: flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+  .navlink { color: var(--ink); text-decoration: none; font-weight: 500; font-size: .95rem; padding: 0 .3rem;
+             height: 36px; display: inline-flex; align-items: center; }
+  .langs { display: flex; height: 36px; box-sizing: border-box; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+  .langs button { height: 100%; display: inline-flex; align-items: center; }
+  .home, .icon-btn { box-sizing: border-box; }
   .langs button { background: none; border: 0; color: var(--ink-soft); font: 600 .8rem "Barlow", sans-serif;
                   padding: .35rem .6rem; cursor: pointer; }
   .langs button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
@@ -300,6 +303,27 @@
   [data-theme="exp"] .marker { border-bottom-color: var(--ink); }
   [data-theme="exp"] .play { background: var(--sel); }
   [data-theme="exp"] .stat .num small { font-family: "Courier Prime", monospace; }
+  [data-theme="exp"] .leaflet-bar { border: 1px solid #C9B48C; border-radius: 2px; box-shadow: 2px 2px 0 rgba(107,90,69,.25); }
+  [data-theme="exp"] .leaflet-bar a, [data-theme="exp"] .leaflet-bar a:hover { background: #F6EEDB; color: #2B2118;
+    border-bottom-color: #C9B48C; border-radius: 0; font-family: "Courier Prime", monospace; }
+  [data-theme="exp"] :is(.lyr-btn, .alt-btn) { background: #F6EEDB; color: #2B2118; border: 1px solid #C9B48C; border-radius: 2px;
+    box-shadow: 2px 2px 0 rgba(107,90,69,.25); }
+  [data-theme="exp"] .alt-btn[aria-pressed="true"] { border-color: #8E2B1E; }
+  [data-theme="exp"] .lyr-btn[aria-expanded="true"] { color: #8E2B1E; }
+  [data-theme="exp"] .lyr-menu { background: #F6EEDB; border: 1px solid #C9B48C; border-radius: 2px; box-shadow: 3px 3px 0 rgba(107,90,69,.25); }
+  [data-theme="exp"] .lyr-item { color: #2B2118; font-family: "Courier Prime", monospace; border-radius: 2px; }
+  [data-theme="exp"] .lyr-item:hover { background: #EDE3CC; }
+  [data-theme="exp"] .lyr-item img { border-radius: 2px; filter: sepia(.4); }
+  [data-theme="exp"] .lyr-item[aria-checked="true"] img { outline-color: #8E2B1E; }
+  [data-theme="exp"] .lock { background: #F6EEDB; color: #2B2118; border: 1px solid #C9B48C; border-radius: 2px;
+    box-shadow: 2px 2px 0 rgba(107,90,69,.25); font-family: "Courier Prime", monospace; }
+  [data-theme="exp"] .play { border-radius: 2px; font-family: "Courier Prime", monospace; box-shadow: 2px 2px 0 rgba(43,33,24,.3); }
+  [data-theme="exp"] .play-c { background: rgba(43,33,24,.85); color: #F6EEDB; border-radius: 2px; font-family: "Courier Prime", monospace; }
+  [data-theme="exp"] .legend { background: rgba(246,238,219,.95); border: 1px solid #C9B48C; border-radius: 2px; color: #2B2118;
+    font-family: "Courier Prime", monospace; }
+  [data-theme="exp"] .leaflet-control-attribution.leaflet-control { background: rgba(246,238,219,.7); color: #6B5A45; }
+  [data-theme="exp"] .pin.a { border-color: #8E2B1E; } [data-theme="exp"] .pin.b { background: #8E2B1E; }
+  [data-theme="exp"] .peak { color: #5B4330; }
   /* menú de temes */
   .thm { position: relative; }
   .thm-menu { position: absolute; right: 0; top: 44px; z-index: 10; min-width: 190px; background: var(--panel); color: var(--ink);
@@ -315,6 +339,8 @@
   [data-theme="exp"] .thm-menu button { font-family: "Courier Prime", monospace; }
   :root[data-theme="dark"] .btn.primary { color: #0E1C27; }
   .nav { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin-top: 1.6rem; }
+  .nav.top { margin: 1rem 0 0; }
+  .nav.top .pg { min-height: 56px; padding: .5rem .8rem; }
   .pg { display: flex; align-items: center; gap: .7rem; min-height: 64px; padding: .6rem .9rem; cursor: pointer;
         background: var(--panel); border: 1px solid var(--line); border-radius: 12px; color: var(--ink); text-align: left;
         font: inherit; transition: border-color .15s ease, background .15s ease; }
@@ -406,12 +432,12 @@
       <p class="route" id="route"></p>
       <p class="date" id="date"></p>
     </div>
-    <div class="qnav">
-      <button class="qb" id="qprev" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button>
-      <button class="qb" id="qnext" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
-    </div>
     <button class="all" id="all" hidden></button>
   </div>
+  <nav class="nav top" id="pagerTop">
+    <button class="pg prev" id="prev2" type="button"></button>
+    <button class="pg next" id="next2" type="button"></button>
+  </nav>
   <div class="stats" id="stats"></div>
   <section class="photos" id="photos" hidden>
     <h3 class="ph" id="phh"></h3>
@@ -1098,8 +1124,8 @@ function showMap() {
 function pick(d) { stopPlay(); go(d); showMap(); }
 $("prev").onclick = () => pick(Math.max(0, cur - 1));
 $("next").onclick = () => pick(Math.min(S.length, cur + 1));
-$("qprev").onclick = () => pick(Math.max(0, cur - 1));
-$("qnext").onclick = () => pick(Math.min(S.length, cur + 1));
+$("prev2").onclick = () => pick(Math.max(0, cur - 1));
+$("next2").onclick = () => pick(Math.min(S.length, cur + 1));
 const CHEV_L = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg>';
 const CHEV_R = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>';
 function where(s) { return s.kind ? t().accl : s.sleep; }
@@ -1115,10 +1141,10 @@ function pgCard(btn, d, side) {
   btn.setAttribute("aria-label", `${k}: ${label}`);
 }
 function paintPager() {
-  $("qprev").disabled = cur <= 0; $("qnext").disabled = cur >= S.length;
-  $("qprev").setAttribute("aria-label", t().prev); $("qnext").setAttribute("aria-label", t().next);
-  pgCard($("prev"), cur >= 1 ? cur - 1 : null, "prev");
-  pgCard($("next"), cur < S.length ? cur + 1 : null, "next");
+  [["prev", "next"], ["prev2", "next2"]].forEach(([p, n]) => {
+    pgCard($(p), cur >= 1 ? cur - 1 : null, "prev");
+    pgCard($(n), cur < S.length ? cur + 1 : null, "next");
+  });
 }
 function fromHash() {
   const m = location.hash.match(/^#dia-(\d+)$/); const d = m ? +m[1] : 0;
