@@ -1,6 +1,6 @@
 // Memòria cau de la web EBC 2026.
 // Canvia VERSION quan pugis canvis importants perquè tothom rebi la versió nova.
-const VERSION = "ebc-v11";
+const VERSION = "ebc-v12";
 const STATIC = VERSION + "-static", RUNTIME = VERSION + "-runtime", TILES = VERSION + "-tiles";
 const MAX_TILES = 400;
 
