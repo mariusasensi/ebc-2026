@@ -604,7 +604,9 @@ const BASES = [
   L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", { maxZoom: 18,
     attribution: '<a href="https://www.esri.com" target="_blank" rel="noopener">© Esri</a>' })
 ];
-BASES[0].addTo(map);
+// Oberta des del disc (web descarregada) no hi ha Referer i OSM bloqueja les tessel·les: comencem amb OpenTopoMap
+const FROM_DISK = location.protocol === "file:";
+BASES[FROM_DISK ? 1 : 0].addTo(map);
 // Control de pantalla completa
 const FS_IN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>';
 const FS_OUT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>';
@@ -622,7 +624,7 @@ const THUMBS = ["https://tile.openstreetmap.org/11/1517/859.png",
                 "https://a.tile.opentopomap.org/11/1517/859.png",
                 "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/11/859/1517"];
 const LYR_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 8l10 5 10-5-10-5z"/><path d="m2 13 10 5 10-5"/></svg>';
-let curBase = 0, lyrBtn, lyrMenu, lyrItems = [];
+let curBase = FROM_DISK ? 1 : 0, lyrBtn, lyrMenu, lyrItems = [];
 function setBase(i) {
   if (i === curBase) return;
   map.removeLayer(BASES[curBase]); BASES[i].addTo(map); BASES[i].bringToBack(); curBase = i; paintLayers();
@@ -641,6 +643,7 @@ const LyrCtl = L.Control.extend({ options: { position: "topright" }, onAdd() {
     it.setAttribute("role", "menuitemradio");
     it.innerHTML = `<img src="${THUMBS[i]}" alt="" loading="lazy" width="44" height="44"><span></span>`;
     it.onclick = () => { setBase(i); openLyr(false); lyrBtn.focus(); };
+    if (FROM_DISK && i === 0) it.style.display = "none";
     lyrItems.push(it);
   });
   L.DomEvent.disableClickPropagation(c); L.DomEvent.disableScrollPropagation(c);
