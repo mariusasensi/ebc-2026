@@ -138,7 +138,9 @@
   .lb-x svg, .lb-a svg { width: 22px; height: 22px; }
   :is(.lb-x, .lb-a, .lb-go):focus-visible { outline: 3px solid #8FBCE3; outline-offset: 2px; }
   @media (max-width: 600px) { .lb-a { top: auto; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); transform: none; } }
-  .files { margin-top: 2rem; }
+  .files { margin: 0 0 1.6rem; }
+  .files[hidden] { display: none; }
+  .fp { display: inline-block; margin-top: .6rem; color: var(--glacier); font-weight: 600; }
   .files h3 { font: 600 1.3rem "Barlow Condensed", sans-serif; margin: 0 0 .6rem; }
   .file-list { display: grid; gap: .5rem; }
   .file { display: flex; align-items: center; gap: .8rem; padding: .7rem .9rem; border: 1px solid var(--line); border-radius: 12px;
@@ -422,6 +424,7 @@
 <section class="intro">
   <h1 id="h1"></h1>
   <p id="sub"></p>
+  <a class="fp" id="fp" href="https://findpenguins.com/marius.asensi/trip/2026-nepal" target="_blank" rel="noopener"></a>
 </section>
 
 <nav class="rope" id="etapes">
@@ -443,6 +446,11 @@
     <button class="pg next" id="next2" type="button"></button>
   </nav>
   <div class="stats" id="stats"></div>
+  <section class="files" id="filesSec" aria-labelledby="fh">
+    <h3 id="fh"></h3>
+    <div class="file-list" id="files"></div>
+    <details class="howto"><summary id="howT"></summary><ol id="how"></ol></details>
+  </section>
   <section class="photos" id="photos" hidden>
     <h3 class="ph" id="phh"></h3>
     <div class="strip" id="strip"></div>
@@ -461,11 +469,6 @@
     <button class="pg prev" id="prev" type="button"></button>
     <button class="pg next" id="next" type="button"></button>
   </nav>
-  <section class="files" aria-labelledby="fh">
-    <h3 id="fh"></h3>
-    <div class="file-list" id="files"></div>
-    <details class="howto"><summary id="howT"></summary><ol id="how"></ol></details>
-  </section>
 </main>
 
 <footer><p id="foot"></p></footer>
@@ -494,7 +497,7 @@ const S = DATA.stages;
 // ---------- Textos ----------
 const T = {
   ca: { title: "Camp Base de l’Everest", sub: "Del 4 al 16 de novembre de 2026, a peu des de Lukla pel Parc Nacional de Sagarmatha.",
-        home: "Inici", allFlag: "Tot", sDl: "GPX", sWk: "Wikiloc", sShare: "Comparteix", thLight: "Clar", thDark: "Fosc", thExp: "Expedició 1953", thTitle: "Estil", share: "Comparteix", copied: "Enllaç copiat", altOn: "Colors per altitud", legend: "Altitud", play: "Reprodueix el trek", stop: "Atura", phStage: "Fotos del dia", phAll: "Fotos del trek", photo: "Foto", goStage: "Veure l’etapa", close: "Tanca", pPrev: "Foto anterior", pNext: "Foto següent", sGain: "pujada", sLoss: "baixada", sMax: "alt. màxima", sGainT: "pujada total", sEbc: "Camp Base", files: "Material del viatge", fWeb: "Tota la web, per guardar-la", fWebM: "zip per obrir-la a l’ordinador, fins i tot sense internet", howT: "Com guardar la web a l’ordinador", how: ["Clica «Tota la web» i desa el fitxer <b>ebc-2026-web.zip</b> (ocupa uns 60 MB).", "Ves a la carpeta de Baixades i fes doble clic al zip: es crearà una carpeta <b>ebc-2026-web</b>.", "Mou aquesta carpeta on vulguis (Documents, un llapis USB…).", "Per mirar-la, obre la carpeta i fes doble clic a <b>index.html</b>: s’obrirà al navegador.", "Fotos, perfils, PDF i GPX funcionen sense internet; el mapa de fons només es veu amb connexió."], fPdf: "Resum en PDF", fPdfM: "15 pàgines · format vertical", fDeck: "Presentació en PDF", fDeckM: "16 pàgines · format 16:9, per a pantalla", fGpx: "Tots els tracks GPX", fGpxM: "13 fitxers en un zip", scrub: "Llisca pel perfil per seguir el recorregut al mapa.", dark: "Mode fosc", light: "Mode clar", fs: "Pantalla completa", fsOut: "Surt de la pantalla completa", lyr: ["Mapa", "Topogràfic", "Satèl·lit"], lyrTitle: "Tipus de mapa", stages: "Dia a dia", hint: "Toca una bandera per veure cada etapa.", map: "Mapa del recorregut",
+        home: "Inici", allFlag: "Tot", sDl: "GPX", sWk: "Wikiloc", sShare: "Comparteix", thLight: "Clar", thDark: "Fosc", thExp: "Expedició 1953", thTitle: "Estil", share: "Comparteix", copied: "Enllaç copiat", altOn: "Colors per altitud", legend: "Altitud", play: "Reprodueix el trek", stop: "Atura", phStage: "Fotos del dia", phAll: "Fotos del trek", photo: "Foto", goStage: "Veure l’etapa", close: "Tanca", pPrev: "Foto anterior", pNext: "Foto següent", sGain: "pujada", sLoss: "baixada", sMax: "alt. màxima", sGainT: "pujada total", sEbc: "Camp Base", files: "Material del viatge", fp: "El viatge sencer, amb més fotos i històries, a FindPenguins →", fWeb: "Tota la web, per guardar-la", fWebM: "zip per obrir-la a l’ordinador, fins i tot sense internet", howT: "Com guardar la web a l’ordinador", how: ["Clica «Tota la web» i desa el fitxer <b>ebc-2026-web.zip</b> (ocupa uns 60 MB).", "Ves a la carpeta de Baixades i fes doble clic al zip: es crearà una carpeta <b>ebc-2026-web</b>.", "Mou aquesta carpeta on vulguis (Documents, un llapis USB…).", "Per mirar-la, obre la carpeta i fes doble clic a <b>index.html</b>: s’obrirà al navegador.", "Fotos, perfils, PDF i GPX funcionen sense internet; el mapa de fons només es veu amb connexió."], fPdf: "Resum en PDF", fPdfM: "15 pàgines · format vertical", fDeck: "Presentació en PDF", fDeckM: "16 pàgines · format 16:9, per a pantalla", fGpx: "Tots els tracks GPX", fGpxM: "13 fitxers en un zip", scrub: "Llisca pel perfil per seguir el recorregut al mapa.", dark: "Mode fosc", light: "Mode clar", fs: "Pantalla completa", fsOut: "Surt de la pantalla completa", lyr: ["Mapa", "Topogràfic", "Satèl·lit"], lyrTitle: "Tipus de mapa", stages: "Dia a dia", hint: "Toca una bandera per veure cada etapa.", map: "Mapa del recorregut",
         unlock: "Mou el mapa", lockIt: "Bloqueja el mapa", all: "Veure tot el trek", whole: "Tot el trek",
         wholeDate: "Del 4 al 16 de novembre de 2026", day: "Dia", days: "dies", onFoot: "a peu", gainTot: "de desnivell positiu",
         dist: "distància", gain: "desnivell positiu", loss: "desnivell negatiu", max: "altitud màxima",
@@ -505,7 +508,7 @@ const T = {
         foot: "Distàncies, desnivells i altituds segons Wikiloc; traçats enregistrats amb Gaia GPS. Altitud de l’EBC: cota oficial.",
         mapby: "Mapa" },
   es: { title: "Campo Base del Everest", sub: "Del 4 al 16 de noviembre de 2026, a pie desde Lukla por el Parque Nacional de Sagarmatha.",
-        home: "Inicio", allFlag: "Todo", sDl: "GPX", sWk: "Wikiloc", sShare: "Compartir", thLight: "Claro", thDark: "Oscuro", thExp: "Expedición 1953", thTitle: "Estilo", share: "Compartir", copied: "Enlace copiado", altOn: "Colores por altitud", legend: "Altitud", play: "Reproducir el trek", stop: "Parar", phStage: "Fotos del día", phAll: "Fotos del trek", photo: "Foto", goStage: "Ver la etapa", close: "Cerrar", pPrev: "Foto anterior", pNext: "Foto siguiente", sGain: "subida", sLoss: "bajada", sMax: "alt. máxima", sGainT: "subida total", sEbc: "Campo Base", files: "Material del viaje", fWeb: "Toda la web, para guardarla", fWebM: "zip para abrirla en el ordenador, incluso sin internet", howT: "Cómo guardar la web en el ordenador", how: ["Pulsa «Toda la web» y guarda el archivo <b>ebc-2026-web.zip</b> (ocupa unos 60 MB).", "Ve a la carpeta de Descargas y haz doble clic en el zip: se creará una carpeta <b>ebc-2026-web</b>.", "Mueve esa carpeta donde quieras (Documentos, un pendrive…).", "Para verla, abre la carpeta y haz doble clic en <b>index.html</b>: se abrirá en el navegador.", "Fotos, perfiles, PDF y GPX funcionan sin internet; el mapa de fondo solo se ve con conexión."], fPdf: "Resumen en PDF", fPdfM: "15 páginas · formato vertical · en catalán", fDeck: "Presentación en PDF", fDeckM: "16 páginas · formato 16:9 · en catalán", fGpx: "Todos los tracks GPX", fGpxM: "13 archivos en un zip", scrub: "Desliza por el perfil para seguir el recorrido en el mapa.", dark: "Modo oscuro", light: "Modo claro", fs: "Pantalla completa", fsOut: "Salir de la pantalla completa", lyr: ["Mapa", "Topográfico", "Satélite"], lyrTitle: "Tipo de mapa", stages: "Día a día", hint: "Toca una bandera para ver cada etapa.", map: "Mapa del recorrido",
+        home: "Inicio", allFlag: "Todo", sDl: "GPX", sWk: "Wikiloc", sShare: "Compartir", thLight: "Claro", thDark: "Oscuro", thExp: "Expedición 1953", thTitle: "Estilo", share: "Compartir", copied: "Enlace copiado", altOn: "Colores por altitud", legend: "Altitud", play: "Reproducir el trek", stop: "Parar", phStage: "Fotos del día", phAll: "Fotos del trek", photo: "Foto", goStage: "Ver la etapa", close: "Cerrar", pPrev: "Foto anterior", pNext: "Foto siguiente", sGain: "subida", sLoss: "bajada", sMax: "alt. máxima", sGainT: "subida total", sEbc: "Campo Base", files: "Material del viaje", fp: "El viaje entero, con más fotos e historias, en FindPenguins →", fWeb: "Toda la web, para guardarla", fWebM: "zip para abrirla en el ordenador, incluso sin internet", howT: "Cómo guardar la web en el ordenador", how: ["Pulsa «Toda la web» y guarda el archivo <b>ebc-2026-web.zip</b> (ocupa unos 60 MB).", "Ve a la carpeta de Descargas y haz doble clic en el zip: se creará una carpeta <b>ebc-2026-web</b>.", "Mueve esa carpeta donde quieras (Documentos, un pendrive…).", "Para verla, abre la carpeta y haz doble clic en <b>index.html</b>: se abrirá en el navegador.", "Fotos, perfiles, PDF y GPX funcionan sin internet; el mapa de fondo solo se ve con conexión."], fPdf: "Resumen en PDF", fPdfM: "15 páginas · formato vertical · en catalán", fDeck: "Presentación en PDF", fDeckM: "16 páginas · formato 16:9 · en catalán", fGpx: "Todos los tracks GPX", fGpxM: "13 archivos en un zip", scrub: "Desliza por el perfil para seguir el recorrido en el mapa.", dark: "Modo oscuro", light: "Modo claro", fs: "Pantalla completa", fsOut: "Salir de la pantalla completa", lyr: ["Mapa", "Topográfico", "Satélite"], lyrTitle: "Tipo de mapa", stages: "Día a día", hint: "Toca una bandera para ver cada etapa.", map: "Mapa del recorrido",
         unlock: "Mover el mapa", lockIt: "Bloquear el mapa", all: "Ver todo el trek", whole: "Todo el trek",
         wholeDate: "Del 4 al 16 de noviembre de 2026", day: "Día", days: "días", onFoot: "a pie", gainTot: "de desnivel positivo",
         dist: "distancia", gain: "desnivel positivo", loss: "desnivel negativo", max: "altitud máxima",
@@ -516,7 +519,7 @@ const T = {
         foot: "Distancias, desniveles y altitudes según Wikiloc; tracks grabados con Gaia GPS. Altitud del EBC: cota oficial.",
         mapby: "Mapa" },
   en: { title: "Everest Base Camp", sub: "4–16 November 2026, on foot from Lukla through Sagarmatha National Park.",
-        home: "Home", allFlag: "All", sDl: "GPX", sWk: "Wikiloc", sShare: "Share", thLight: "Light", thDark: "Dark", thExp: "1953 Expedition", thTitle: "Style", share: "Share", copied: "Link copied", altOn: "Colour by altitude", legend: "Altitude", play: "Play the trek", stop: "Stop", phStage: "Photos of the day", phAll: "Trek photos", photo: "Photo", goStage: "See the stage", close: "Close", pPrev: "Previous photo", pNext: "Next photo", sGain: "ascent", sLoss: "descent", sMax: "highest point", sGainT: "total ascent", sEbc: "Base Camp", files: "Trip downloads", fWeb: "The whole website, to keep", fWebM: "zip to open on your computer, even offline", howT: "How to save the website on your computer", how: ["Click “The whole website” and save <b>ebc-2026-web.zip</b> (about 60 MB).", "Open your Downloads folder and double-click the zip: you’ll get a folder called <b>ebc-2026-web</b>.", "Move that folder wherever you like (Documents, a USB stick…).", "To view it, open the folder and double-click <b>index.html</b>: it opens in your browser.", "Photos, profiles, PDFs and GPX work offline; the background map needs a connection."], fPdf: "PDF summary", fPdfM: "15 pages · portrait · in Catalan", fDeck: "PDF slides", fDeckM: "16 pages · 16:9 for screens · in Catalan", fGpx: "All GPX tracks", fGpxM: "13 files in a zip", scrub: "Slide along the profile to follow the route on the map.", dark: "Dark mode", light: "Light mode", fs: "Full screen", fsOut: "Exit full screen", lyr: ["Map", "Topographic", "Satellite"], lyrTitle: "Map style", stages: "Day by day", hint: "Tap a flag to see each stage.", map: "Route map",
+        home: "Home", allFlag: "All", sDl: "GPX", sWk: "Wikiloc", sShare: "Share", thLight: "Light", thDark: "Dark", thExp: "1953 Expedition", thTitle: "Style", share: "Share", copied: "Link copied", altOn: "Colour by altitude", legend: "Altitude", play: "Play the trek", stop: "Stop", phStage: "Photos of the day", phAll: "Trek photos", photo: "Photo", goStage: "See the stage", close: "Close", pPrev: "Previous photo", pNext: "Next photo", sGain: "ascent", sLoss: "descent", sMax: "highest point", sGainT: "total ascent", sEbc: "Base Camp", files: "Trip downloads", fp: "The whole trip, with more photos and stories, on FindPenguins →", fWeb: "The whole website, to keep", fWebM: "zip to open on your computer, even offline", howT: "How to save the website on your computer", how: ["Click “The whole website” and save <b>ebc-2026-web.zip</b> (about 60 MB).", "Open your Downloads folder and double-click the zip: you’ll get a folder called <b>ebc-2026-web</b>.", "Move that folder wherever you like (Documents, a USB stick…).", "To view it, open the folder and double-click <b>index.html</b>: it opens in your browser.", "Photos, profiles, PDFs and GPX work offline; the background map needs a connection."], fPdf: "PDF summary", fPdfM: "15 pages · portrait · in Catalan", fDeck: "PDF slides", fDeckM: "16 pages · 16:9 for screens · in Catalan", fGpx: "All GPX tracks", fGpxM: "13 files in a zip", scrub: "Slide along the profile to follow the route on the map.", dark: "Dark mode", light: "Light mode", fs: "Full screen", fsOut: "Exit full screen", lyr: ["Map", "Topographic", "Satellite"], lyrTitle: "Map style", stages: "Day by day", hint: "Tap a flag to see each stage.", map: "Route map",
         unlock: "Move the map", lockIt: "Lock the map", all: "See the whole trek", whole: "The whole trek",
         wholeDate: "4–16 November 2026", day: "Day", days: "days", onFoot: "on foot", gainTot: "elevation gain",
         dist: "distance", gain: "elevation gain", loss: "elevation loss", max: "highest point",
@@ -1007,6 +1010,7 @@ function render(fly) {
     if (!loop) ends.addLayer(pin(z, "b", 16));
   }
   placeMarker();
+  $("filesSec").hidden = !!s;
   if (!s) {
     const up = S.reduce((a, x) => a + x.up, 0);
     $("h").innerHTML = `<span class="mf allf" aria-hidden="true"></span>${L_.whole}`;
@@ -1048,7 +1052,7 @@ function applyLang() {
   const L_ = t();
   document.documentElement.lang = lang;
   document.title = `${L_.title} · 2026`;
-  $("h1").textContent = L_.title; $("sub").textContent = L_.sub;
+  $("h1").textContent = L_.title; $("sub").textContent = L_.sub; $("fp").textContent = L_.fp;
   $("navStages").textContent = L_.stages; $("home").setAttribute("aria-label", L_.home); $("home").title = L_.home; $("hint").textContent = L_.hint;
   $("map").setAttribute("aria-label", L_.map); $("prof").setAttribute("aria-label", L_.prof);
   $("all").textContent = L_.all; setBtn($("dl"), DL_SVG, L_.dl, L_.sDl);
