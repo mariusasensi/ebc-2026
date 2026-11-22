@@ -1,0 +1,20 @@
+# Empaqueta la web en un zip i el penja a la release "web" (botó «Tota la web»)
+name: release
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  zip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          mkdir ebc-2026-web && cp -r index.html manifest.webmanifest sw.js og.jpg *.png gpx img pdf vendor ebc-2026-web/
+          (cd ebc-2026-web/gpx && zip -q EBC-2026-tracks.zip *.gpx)
+          zip -qr ebc-2026-web.zip ebc-2026-web
+          gh release upload web ebc-2026-web.zip --clobber
+        env:
+          GH_TOKEN: ${{ github.token }}
